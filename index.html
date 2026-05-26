@@ -3,283 +3,267 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Yanna's Cafe — Order Ahead</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<title>Yanna's Vietnamese Coffee</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 :root{
-  --creme:#FAF7F2;--creme2:#F3EDE3;--creme3:#E8DFD0;
-  --brown:#2C1A0E;--brown2:#5C3D2E;--brown3:#8B6347;
-  --green:#1D6B44;--green-l:#E8F5EE;
-  --amber:#C47D2E;--amber-l:#FDF3E3;
-  --red:#B03030;--red-l:#FDEAEA;
-  --teal:#1A6B5C;--teal-l:#E5F5F1;
-  --white:#FFFFFF;
-  --shadow:0 2px 16px rgba(44,26,14,0.10);
-  --shadow-lg:0 8px 32px rgba(44,26,14,0.16);
-  --r:12px;--rl:18px;--rx:24px;
+  --black:#141414;--dark:#1C1C1E;--dark2:#252528;--dark3:#2E2E32;--dark4:#38383D;
+  --gold:#C9A452;--gold-l:#E8C97A;--gold-d:#8B6B2E;--gold-bg:rgba(201,164,82,0.12);--gold-bg2:rgba(201,164,82,0.06);
+  --text:#F2EFE8;--text2:rgba(242,239,232,0.65);--text3:rgba(242,239,232,0.35);
+  --green:#30D158;--green-bg:rgba(48,209,88,0.12);
+  --red:#FF453A;--red-bg:rgba(255,69,58,0.12);
+  --amber:#FF9F0A;--amber-bg:rgba(255,159,10,0.12);
+  --border:1px solid rgba(201,164,82,0.15);--border2:1px solid rgba(242,239,232,0.08);
+  --r:12px;--rl:18px;--rx:50px;
 }
-html,body{height:100%;height:100dvh;background:var(--creme);color:var(--brown);font-family:'DM Sans',sans-serif;font-size:15px;overflow:hidden}
+html,body{height:100%;height:100dvh;background:var(--black);color:var(--text);font-family:'DM Sans',sans-serif;font-size:15px;overflow:hidden}
 #app{height:100%;height:100dvh;display:flex;flex-direction:column;max-width:480px;margin:0 auto;position:relative}
 
 /* SCREENS */
-.screen{position:absolute;inset:0;display:flex;flex-direction:column;background:var(--creme);transition:transform .35s cubic-bezier(.4,0,.2,1),opacity .35s;overflow:hidden}
+.screen{position:absolute;inset:0;display:flex;flex-direction:column;background:var(--black);transition:transform .32s cubic-bezier(.4,0,.2,1),opacity .32s;overflow:hidden}
 .screen.hidden{transform:translateX(100%);opacity:0;pointer-events:none}
-.screen.slide-left{transform:translateX(-8%);opacity:0;pointer-events:none}
-
-/* TOPBAR */
-.topbar{display:flex;align-items:center;gap:12px;padding:16px 20px 12px;flex-shrink:0}
-.back-btn{width:36px;height:36px;border-radius:50%;border:1.5px solid var(--creme3);background:var(--white);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;flex-shrink:0}
-.back-btn:active{background:var(--creme2)}
-.topbar-title{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:var(--brown);flex:1}
-.cart-btn{position:relative;width:40px;height:40px;border-radius:50%;background:var(--brown);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:18px;flex-shrink:0}
-.cart-badge{position:absolute;top:-3px;right:-3px;background:var(--amber);color:#fff;font-size:10px;font-weight:700;min-width:18px;height:18px;border-radius:9px;display:flex;align-items:center;justify-content:center;padding:0 4px;display:none}
-
-/* SPLASH SCREEN */
-#screen-splash{background:var(--brown);justify-content:center;align-items:center;gap:0}
-.splash-bg{position:absolute;inset:0;background:radial-gradient(ellipse at 30% 20%, #4a2c1a 0%, var(--brown) 60%)}
-.splash-content{position:relative;text-align:center;padding:40px 32px}
-.splash-logo{font-size:56px;margin-bottom:20px;animation:float 3s ease-in-out infinite}
-@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
-.splash-name{font-family:'Playfair Display',serif;font-size:36px;font-weight:900;color:var(--creme);line-height:1.1;margin-bottom:8px}
-.splash-name span{color:#C47D2E}
-.splash-tag{font-size:13px;color:rgba(250,247,242,0.6);letter-spacing:.08em;margin-bottom:48px}
-.splash-btn{background:var(--amber);color:var(--white);border:none;border-radius:var(--rx);padding:16px 48px;font-size:16px;font-weight:600;font-family:'DM Sans',sans-serif;cursor:pointer;transition:transform .15s,background .15s;box-shadow:0 4px 20px rgba(196,125,46,0.4)}
-.splash-btn:active{transform:scale(0.97)}
-.splash-tagline{font-size:12px;color:rgba(250,247,242,0.4);margin-top:20px}
-
-/* SCROLLABLE BODY */
+.screen.slide-left{transform:translateX(-6%);opacity:0;pointer-events:none}
 .screen-body{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch}
 .screen-body::-webkit-scrollbar{display:none}
 
-/* MENU */
-.menu-hero{background:var(--brown);padding:20px 20px 24px;flex-shrink:0}
-.menu-hero-text{font-family:'Playfair Display',serif;font-size:24px;font-weight:700;color:var(--creme);margin-bottom:4px}
-.menu-hero-sub{font-size:13px;color:rgba(250,247,242,0.6)}
-.cat-scroll{display:flex;gap:8px;padding:14px 20px;overflow-x:auto;flex-shrink:0;background:var(--white)}
+/* TOPBAR */
+.topbar{display:flex;align-items:center;gap:12px;padding:14px 20px 10px;flex-shrink:0;background:var(--black)}
+.back-btn{width:36px;height:36px;border-radius:50%;border:var(--border);background:var(--dark2);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:18px;color:var(--gold);flex-shrink:0}
+.back-btn:active{background:var(--dark3)}
+.topbar-title{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:var(--text);flex:1}
+
+/* CTA */
+.cta-wrap{padding:14px 20px 32px;flex-shrink:0;background:var(--black)}
+.cta-btn{width:100%;padding:17px;border-radius:var(--rx);background:var(--gold);color:var(--black);border:none;font-size:16px;font-weight:700;font-family:'DM Sans',sans-serif;cursor:pointer;transition:.15s;display:flex;align-items:center;justify-content:center;gap:8px;letter-spacing:.01em}
+.cta-btn:active{background:var(--gold-l);transform:scale(0.98)}
+.cta-btn:disabled{opacity:0.35;cursor:not-allowed;transform:none}
+.cta-btn.dark{background:var(--dark3);color:var(--text2);border:var(--border2)}
+.cta-btn.green{background:var(--green);color:#000}
+
+/* TOAST */
+.toast{position:fixed;bottom:110px;left:50%;transform:translateX(-50%) translateY(10px);background:var(--dark3);color:var(--text);padding:12px 20px;border-radius:var(--rx);font-size:13px;font-weight:500;opacity:0;transition:.3s;pointer-events:none;white-space:nowrap;z-index:999;border:var(--border);box-shadow:0 8px 24px rgba(0,0,0,.4)}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* ══ SPLASH ══════════════════════════════════════ */
+#screen-splash{background:var(--black);justify-content:space-between}
+.splash-top{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 32px 20px}
+.splash-logo-wrap{width:160px;height:160px;margin-bottom:28px;animation:float 3s ease-in-out infinite}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+.splash-logo-wrap img{width:100%;height:100%;object-fit:contain;border-radius:20px}
+.splash-title{font-family:'Playfair Display',serif;font-size:32px;font-weight:900;color:var(--text);text-align:center;line-height:1.1;margin-bottom:6px}
+.splash-title span{color:var(--gold)}
+.splash-sub{font-size:13px;color:var(--text3);text-align:center;letter-spacing:.08em;text-transform:uppercase}
+.splash-bottom{padding:20px 24px 44px;display:flex;flex-direction:column;gap:10px}
+.splash-cta{width:100%;padding:17px;border-radius:var(--rx);background:var(--gold);color:var(--black);border:none;font-size:16px;font-weight:700;font-family:'DM Sans',sans-serif;cursor:pointer;text-align:center;transition:.15s}
+.splash-cta:active{background:var(--gold-l);transform:scale(0.98)}
+.splash-tagline{text-align:center;font-size:12px;color:var(--text3)}
+.splash-gold-line{width:60px;height:1px;background:var(--gold);margin:0 auto 20px;opacity:0.4}
+
+/* ══ MENU ════════════════════════════════════════ */
+.menu-header{background:var(--dark);padding:16px 20px 14px;flex-shrink:0;border-bottom:var(--border2)}
+.menu-header-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.menu-logo{height:36px;object-fit:contain}
+.menu-greeting{font-size:12px;color:var(--text3)}
+.menu-title{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:var(--text)}
+.cart-btn{width:42px;height:42px;border-radius:50%;background:var(--gold-bg);border:var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:20px;position:relative;flex-shrink:0}
+.cart-badge{position:absolute;top:-2px;right:-2px;background:var(--gold);color:var(--black);font-size:10px;font-weight:700;min-width:17px;height:17px;border-radius:9px;display:none;align-items:center;justify-content:center;padding:0 4px}
+.cat-scroll{display:flex;gap:8px;padding:0 20px 14px;overflow-x:auto;flex-shrink:0}
 .cat-scroll::-webkit-scrollbar{display:none}
-.cat-chip{padding:7px 16px;border-radius:20px;border:1.5px solid var(--creme3);background:transparent;font-size:13px;font-weight:500;color:var(--brown2);white-space:nowrap;cursor:pointer;transition:.15s;font-family:'DM Sans',sans-serif}
-.cat-chip.active{background:var(--brown);border-color:var(--brown);color:var(--creme)}
-.menu-section{padding:14px 20px 0}
-.section-label{font-size:11px;font-weight:600;letter-spacing:.08em;color:var(--brown3);text-transform:uppercase;margin-bottom:10px}
-.menu-item{background:var(--white);border-radius:var(--rl);padding:14px;margin-bottom:10px;border:1.5px solid var(--creme2);cursor:pointer;transition:.15s}
-.menu-item:active{background:var(--creme2)}
-.mi-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px}
-.mi-name{font-size:14px;font-weight:600;color:var(--brown);flex:1;line-height:1.3}
-.mi-badge{font-size:10px;padding:3px 8px;border-radius:8px;font-weight:600;margin-left:8px;flex-shrink:0}
-.bc{background:#FDF3E3;color:#854F0B}
-.bt{background:#E5F5F1;color:#0F6E56}
-.bf{background:var(--creme2);color:var(--brown2)}
-.bco{background:#EEEDFE;color:#534AB7}
-.bm{background:#EAF3DE;color:#3B6D11}
-.mi-price{font-size:14px;font-weight:700;color:var(--green)}
-.mi-size{font-size:11px;color:var(--brown3)}
+.cat-chip{padding:7px 16px;border-radius:var(--rx);border:var(--border);background:transparent;font-size:13px;font-weight:500;color:var(--text2);white-space:nowrap;cursor:pointer;font-family:'DM Sans',sans-serif;transition:.15s;flex-shrink:0}
+.cat-chip.active{background:var(--gold);border-color:var(--gold);color:var(--black);font-weight:700}
+.menu-section{padding:6px 20px 0}
+.section-label{font-size:11px;font-weight:600;letter-spacing:.1em;color:var(--gold);text-transform:uppercase;margin-bottom:10px;margin-top:14px;opacity:0.8}
+.menu-item{background:var(--dark2);border-radius:var(--rl);padding:14px;margin-bottom:8px;border:var(--border2);transition:.15s;cursor:pointer}
+.menu-item:active{background:var(--dark3);border-color:rgba(201,164,82,0.3)}
+.mi-top{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:4px}
+.mi-name{font-size:14px;font-weight:600;color:var(--text);flex:1;line-height:1.35}
+.mi-badge{font-size:10px;padding:3px 8px;border-radius:8px;font-weight:600;white-space:nowrap;flex-shrink:0}
+.bc{background:rgba(255,159,10,0.15);color:#FF9F0A}
+.bt{background:rgba(48,209,88,0.12);color:#30D158}
+.bf{background:rgba(242,239,232,0.08);color:var(--text2)}
+.bco{background:rgba(201,164,82,0.15);color:var(--gold)}
+.bm{background:rgba(48,209,88,0.12);color:#30D158}
+.mi-price{font-size:14px;font-weight:700;color:var(--gold)}
 .hc-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
-.hc-opt{padding:9px 8px;border-radius:10px;text-align:center;cursor:pointer;border:1.5px solid transparent;transition:.15s}
-.hc-opt.hot{background:#FFF4ED;border-color:#FBBF8A}
-.hc-opt.hot:active{background:#FFE4CC}
-.hc-opt.cold{background:#EDF5FF;border-color:#93C5FD}
-.hc-opt.cold:active{background:#DBEAFE}
-.hc-opt-label{font-size:11px;font-weight:600;color:#666}
-.hc-opt-price{font-size:14px;font-weight:700;color:var(--green)}
-.hc-opt-size{font-size:10px;color:#999}
-.add-plain-btn{width:100%;margin-top:8px;padding:9px;border-radius:10px;background:var(--green-l);border:1.5px solid #6ECA98;color:var(--green);font-weight:600;font-size:13px;cursor:pointer;font-family:'DM Sans',sans-serif}
-.add-plain-btn:active{background:#C0EDD4}
-.menu-bottom-pad{height:100px}
+.hc-opt{padding:10px 8px;border-radius:10px;text-align:center;cursor:pointer;border:1px solid rgba(242,239,232,0.1);background:var(--dark3);transition:.15s}
+.hc-opt:active{border-color:var(--gold);background:var(--gold-bg)}
+.hc-opt.hot{border-color:rgba(255,159,10,0.25);background:rgba(255,159,10,0.07)}
+.hc-opt.cold{border-color:rgba(100,180,255,0.2);background:rgba(100,180,255,0.06)}
+.hc-opt-label{font-size:11px;font-weight:600;color:var(--text2);margin-bottom:3px}
+.hc-opt-price{font-size:14px;font-weight:700;color:var(--gold)}
+.add-plain-btn{width:100%;margin-top:8px;padding:9px;border-radius:10px;background:var(--gold-bg);border:var(--border);color:var(--gold);font-weight:700;font-size:13px;cursor:pointer;font-family:'DM Sans',sans-serif;transition:.15s}
+.add-plain-btn:active{background:rgba(201,164,82,0.22)}
+.menu-bottom-pad{height:110px}
 
 /* CART FAB */
-.cart-fab{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--brown);color:var(--creme);border:none;border-radius:var(--rx);padding:15px 28px;font-size:15px;font-weight:600;font-family:'DM Sans',sans-serif;cursor:pointer;box-shadow:0 6px 24px rgba(44,26,14,0.35);display:flex;align-items:center;gap:12px;transition:transform .15s,opacity .3s;min-width:220px;justify-content:center;z-index:100}
+.cart-fab{position:fixed;bottom:26px;left:50%;transform:translateX(-50%);background:var(--gold);color:var(--black);border:none;border-radius:var(--rx);padding:15px 26px;font-size:15px;font-weight:700;font-family:'DM Sans',sans-serif;cursor:pointer;box-shadow:0 8px 28px rgba(201,164,82,0.35);display:flex;align-items:center;gap:12px;transition:transform .2s,opacity .3s;min-width:230px;justify-content:center;z-index:100}
 .cart-fab.hidden{opacity:0;pointer-events:none;transform:translateX(-50%) translateY(20px)}
 .cart-fab:active{transform:translateX(-50%) scale(0.97)}
-.fab-count{background:var(--amber);color:#fff;font-size:12px;font-weight:700;min-width:22px;height:22px;border-radius:11px;display:flex;align-items:center;justify-content:center;padding:0 5px}
-.fab-total{font-size:14px;font-weight:700;color:#C47D2E}
+.fab-count{background:var(--black);color:var(--gold);font-size:12px;font-weight:700;min-width:22px;height:22px;border-radius:11px;display:flex;align-items:center;justify-content:center;padding:0 5px}
+.fab-total{font-size:13px;font-weight:700;opacity:0.7}
 
-/* CART SCREEN */
-.cart-empty{text-align:center;padding:60px 24px;color:var(--brown3)}
-.cart-empty-icon{font-size:48px;margin-bottom:12px}
-.cart-item-row{background:var(--white);border-radius:var(--r);padding:13px 16px;margin-bottom:8px;display:flex;align-items:center;gap:12px;border:1.5px solid var(--creme2)}
-.ci-info{flex:1}
-.ci-name{font-size:13px;font-weight:600;color:var(--brown)}
-.ci-temp{font-size:11px;color:var(--brown3)}
-.ci-price{font-size:14px;font-weight:700;color:var(--green);margin-right:8px}
+/* ══ CART ════════════════════════════════════════ */
+.cart-empty{text-align:center;padding:60px 24px;color:var(--text3)}
+.cart-section{padding:16px 20px}
+.cart-item-row{background:var(--dark2);border-radius:var(--r);padding:13px 16px;margin-bottom:8px;display:flex;align-items:center;gap:12px;border:var(--border2)}
+.ci-name{font-size:13px;font-weight:600;color:var(--text)}
+.ci-temp{font-size:11px;color:var(--text3);margin-top:1px}
+.ci-price{font-size:14px;font-weight:700;color:var(--gold);margin-right:6px}
 .qty-row{display:flex;align-items:center;gap:8px}
-.qb{width:28px;height:28px;border-radius:50%;border:1.5px solid var(--creme3);background:var(--white);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-weight:600;color:var(--brown)}
-.qb:active{background:var(--creme2)}
-.qn{font-size:14px;font-weight:700;min-width:20px;text-align:center}
-.cart-section{padding:20px}
-.cart-summary{background:var(--white);border-radius:var(--rl);padding:16px;border:1.5px solid var(--creme2);margin-bottom:16px}
-.sum-row{display:flex;justify-content:space-between;font-size:13px;color:var(--brown3);padding:3px 0}
-.sum-total{display:flex;justify-content:space-between;font-size:17px;font-weight:700;color:var(--brown);padding:10px 0 0;border-top:1.5px solid var(--creme3);margin-top:6px}
+.qb{width:28px;height:28px;border-radius:50%;border:var(--border);background:var(--dark3);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-weight:600;color:var(--gold);transition:.1s}
+.qb:active{background:var(--gold);color:var(--black)}
+.qn{font-size:14px;font-weight:700;min-width:20px;text-align:center;color:var(--text)}
+.cart-summary{background:var(--dark2);border-radius:var(--rl);padding:16px;border:var(--border);margin-top:8px}
+.sum-row{display:flex;justify-content:space-between;font-size:13px;color:var(--text3);padding:3px 0}
+.sum-total{display:flex;justify-content:space-between;font-size:18px;font-weight:700;padding:12px 0 0;border-top:var(--border2);margin-top:8px;color:var(--text)}
+.sum-total span:last-child{color:var(--gold)}
 
-/* DETAILS SCREEN */
+/* ══ DETAILS ════════════════════════════════════ */
 .det-section{padding:20px}
-.field-label{font-size:12px;font-weight:600;color:var(--brown3);letter-spacing:.04em;margin-bottom:6px}
-.field-input{width:100%;padding:13px 16px;border-radius:var(--r);border:1.5px solid var(--creme3);background:var(--white);font-size:15px;font-family:'DM Sans',sans-serif;color:var(--brown);margin-bottom:16px;outline:none;transition:border-color .2s}
-.field-input:focus{border-color:var(--brown2)}
-.pay-opts{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
-.pay-opt{padding:14px 12px;border-radius:var(--r);border:2px solid var(--creme3);background:var(--white);text-align:center;cursor:pointer;transition:.2s}
-.pay-opt.selected{border-color:var(--brown);background:var(--brown)}
-.pay-opt.selected .po-name{color:var(--creme)}
-.pay-opt.selected .po-icon{filter:grayscale(0)}
-.po-icon{font-size:24px;margin-bottom:4px;filter:grayscale(0.3)}
-.po-name{font-size:13px;font-weight:600;color:var(--brown2)}
+.field-group{margin-bottom:16px}
+.field-label{font-size:11px;font-weight:600;color:var(--gold);letter-spacing:.06em;text-transform:uppercase;margin-bottom:7px;display:flex;align-items:center;gap:4px}
+.req{color:var(--red);font-size:13px}
+.field-input{width:100%;padding:14px 16px;border-radius:var(--r);border:var(--border2);background:var(--dark2);font-size:15px;font-family:'DM Sans',sans-serif;color:var(--text);outline:none;transition:.2s;-webkit-appearance:none}
+.field-input:focus{border-color:var(--gold);background:var(--dark3)}
+.field-input::placeholder{color:var(--text3)}
+.name-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
+.pay-opts{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}
+.pay-opt{padding:14px 8px;border-radius:var(--r);border:var(--border2);background:var(--dark2);text-align:center;cursor:pointer;transition:.2s}
+.pay-opt.selected{border-color:var(--gold);background:var(--gold-bg)}
+.pay-opt.selected .po-name{color:var(--gold)}
+.po-icon{font-size:22px;margin-bottom:5px}
+.po-name{font-size:12px;font-weight:600;color:var(--text2)}
+.info-box{background:var(--gold-bg2);border-radius:var(--r);padding:13px 16px;border:var(--border);font-size:12px;color:var(--text2);line-height:1.6}
 
-/* ETA SCREEN */
+/* ══ ETA ═════════════════════════════════════════ */
 .eta-section{padding:20px}
-.eta-intro{background:var(--brown);border-radius:var(--rl);padding:18px;margin-bottom:20px;text-align:center}
-.eta-intro-icon{font-size:32px;margin-bottom:8px}
-.eta-intro-text{font-size:14px;color:rgba(250,247,242,0.85);line-height:1.5}
-.eta-intro-text strong{color:var(--creme)}
-.eta-opts{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px}
-.eta-opt{padding:18px 12px;border-radius:var(--rl);border:2px solid var(--creme3);background:var(--white);text-align:center;cursor:pointer;transition:.2s}
+.eta-intro{background:var(--dark2);border-radius:var(--rl);padding:18px;margin-bottom:20px;border:var(--border)}
+.eta-intro-icon{font-size:28px;margin-bottom:8px}
+.eta-intro-text{font-size:13px;color:var(--text2);line-height:1.6}
+.eta-intro-text strong{color:var(--gold)}
+.eta-opts{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+.eta-opt{padding:18px 12px;border-radius:var(--rl);border:var(--border2);background:var(--dark2);text-align:center;cursor:pointer;transition:.2s}
 .eta-opt:active{transform:scale(0.97)}
-.eta-opt.selected{border-color:var(--green);background:var(--green-l)}
-.eta-opt.selected .eo-min{color:var(--green)}
-.eo-min{font-family:'Playfair Display',serif;font-size:28px;font-weight:700;color:var(--brown);line-height:1}
-.eo-label{font-size:11px;color:var(--brown3);margin-top:3px}
-.eta-gps{background:var(--creme2);border-radius:var(--r);padding:14px 16px;display:flex;align-items:center;gap:12px;cursor:pointer;border:1.5px solid var(--creme3);transition:.15s;margin-bottom:16px}
-.eta-gps:active{background:var(--creme3)}
-.eta-gps-icon{font-size:22px}
-.eta-gps-text{font-size:13px;font-weight:500;color:var(--brown)}
-.eta-gps-sub{font-size:11px;color:var(--brown3)}
+.eta-opt.selected{border-color:var(--gold);background:var(--gold-bg)}
+.eta-opt.selected .eo-min{color:var(--gold)}
+.eo-min{font-family:'Playfair Display',serif;font-size:30px;font-weight:700;color:var(--text);line-height:1}
+.eo-label{font-size:11px;color:var(--text3);margin-top:4px}
+.eta-gps{background:var(--dark2);border-radius:var(--r);padding:14px 16px;display:flex;align-items:center;gap:12px;cursor:pointer;border:var(--border2);transition:.15s}
+.eta-gps:active{border-color:var(--gold);background:var(--dark3)}
+.eta-gps-text{font-size:13px;font-weight:500;color:var(--text)}
+.eta-gps-sub{font-size:11px;color:var(--text3);margin-top:1px}
 
-/* MAIN CTA BUTTON */
-.cta-wrap{padding:16px 20px 32px;flex-shrink:0}
-.cta-btn{width:100%;padding:16px;border-radius:var(--rx);background:var(--brown);color:var(--creme);border:none;font-size:16px;font-weight:600;font-family:'DM Sans',sans-serif;cursor:pointer;transition:.15s;display:flex;align-items:center;justify-content:center;gap:8px}
-.cta-btn:active{background:var(--brown2)}
-.cta-btn:disabled{opacity:0.45;cursor:not-allowed}
-.cta-btn.green{background:var(--green);box-shadow:0 4px 16px rgba(29,107,68,0.3)}
-.cta-btn.green:active{background:#155233}
-
-/* PROCESSING SCREEN */
-#screen-processing{background:var(--brown);justify-content:center;align-items:center}
+/* ══ PROCESSING ══════════════════════════════════ */
+#screen-processing{background:var(--black);justify-content:center;align-items:center}
 .proc-content{text-align:center;padding:40px}
-.proc-spinner{width:56px;height:56px;border:3px solid rgba(250,247,242,0.2);border-top-color:var(--amber);border-radius:50%;animation:spin 0.9s linear infinite;margin:0 auto 24px}
+.proc-logo{width:80px;height:80px;object-fit:contain;border-radius:14px;margin:0 auto 28px}
+.proc-ring{width:56px;height:56px;border:2px solid rgba(201,164,82,0.2);border-top-color:var(--gold);border-radius:50%;animation:spin .9s linear infinite;margin:0 auto 24px}
 @keyframes spin{to{transform:rotate(360deg)}}
-.proc-title{font-family:'Playfair Display',serif;font-size:22px;color:var(--creme);margin-bottom:8px}
-.proc-sub{font-size:13px;color:rgba(250,247,242,0.6)}
+.proc-title{font-family:'Playfair Display',serif;font-size:22px;color:var(--text);margin-bottom:8px}
+.proc-sub{font-size:13px;color:var(--text3)}
 
-/* STATUS / TRACKING SCREEN */
-.status-hero{background:var(--brown);padding:24px 20px 28px;text-align:center;flex-shrink:0}
-.status-order-num{font-size:12px;letter-spacing:.1em;color:rgba(250,247,242,0.5);margin-bottom:4px}
-.status-name{font-family:'Playfair Display',serif;font-size:26px;color:var(--creme);margin-bottom:6px}
-.status-sub{font-size:13px;color:rgba(250,247,242,0.6)}
+/* ══ STATUS ══════════════════════════════════════ */
+.status-header{background:var(--dark);padding:20px 20px 0;flex-shrink:0;border-bottom:var(--border2)}
+.status-header-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.status-order-badge{background:var(--gold-bg);border:var(--border);border-radius:var(--rx);padding:5px 14px;font-size:12px;font-weight:700;color:var(--gold);letter-spacing:.04em}
+.status-live-dot{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 0 3px rgba(48,209,88,0.2);flex-shrink:0}
+.status-name{font-family:'Playfair Display',serif;font-size:24px;font-weight:700;color:var(--text);margin-bottom:4px;line-height:1.2}
+.status-sub{font-size:13px;color:var(--text3);margin-bottom:20px}
 
-.tracker-wrap{padding:20px}
-.tracker-card{background:var(--white);border-radius:var(--rl);padding:20px;border:1.5px solid var(--creme2);margin-bottom:14px;text-align:center}
-.eta-countdown{font-family:'Playfair Display',serif;font-size:52px;font-weight:700;line-height:1;transition:color .5s}
+/* Timer tabs */
+.status-tabs{display:flex;gap:0;border-top:var(--border2)}
+.s-tab{flex:1;padding:12px 0;text-align:center;font-size:12px;font-weight:600;color:var(--text3);cursor:pointer;border-bottom:2px solid transparent;transition:.2s}
+.s-tab.active{color:var(--gold);border-bottom-color:var(--gold)}
+
+/* Timer card */
+.timer-card{background:var(--dark2);border-radius:var(--rl);padding:22px 20px 18px;border:var(--border);margin-bottom:12px;text-align:center}
+.timer-label{font-size:11px;color:var(--text3);letter-spacing:.06em;text-transform:uppercase;margin-bottom:8px}
+.eta-countdown{font-family:'Playfair Display',serif;font-size:56px;font-weight:700;line-height:1;transition:color .4s;letter-spacing:-1px}
 .eta-countdown.green-t{color:var(--green)}
 .eta-countdown.amber-t{color:var(--amber)}
 .eta-countdown.red-t{color:var(--red)}
-.eta-countdown-label{font-size:12px;color:var(--brown3);margin-top:6px}
-.prog-bar{height:8px;background:var(--creme2);border-radius:4px;overflow:hidden;margin:16px 0 6px}
-.prog-fill{height:100%;border-radius:4px;transition:width .8s ease,background .5s}
-.prog-labels{display:flex;justify-content:space-between;font-size:11px;color:var(--brown3)}
+.prog-bar{height:4px;background:var(--dark4);border-radius:2px;overflow:hidden;margin:14px 0 8px}
+.prog-fill{height:100%;border-radius:2px;transition:width .8s ease,background .4s}
+.prog-labels{display:flex;justify-content:space-between;font-size:11px;color:var(--text3)}
 
-.steps-card{background:var(--white);border-radius:var(--rl);padding:18px;border:1.5px solid var(--creme2);margin-bottom:14px}
+/* Steps */
+.steps-card{background:var(--dark2);border-radius:var(--rl);padding:18px;border:var(--border2);margin-bottom:12px}
 .step-row{display:flex;align-items:center;gap:14px;padding:10px 0}
-.step-row:not(:last-child){border-bottom:1.5px solid var(--creme2)}
-.step-icon{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;transition:.4s}
-.step-icon.done{background:var(--green);box-shadow:0 0 0 4px rgba(29,107,68,0.12)}
-.step-icon.active{background:var(--amber);box-shadow:0 0 0 4px rgba(196,125,46,0.12);animation:pulse-step 1.5s infinite}
-.step-icon.wait{background:var(--creme2)}
-@keyframes pulse-step{0%,100%{box-shadow:0 0 0 4px rgba(196,125,46,0.12)}50%{box-shadow:0 0 0 8px rgba(196,125,46,0.06)}}
-.step-info{flex:1}
-.step-title{font-size:14px;font-weight:600;color:var(--brown)}
-.step-desc{font-size:12px;color:var(--brown3);margin-top:1px}
-.step-title.muted{color:var(--brown3)}
+.step-row:not(:last-child){border-bottom:var(--border2)}
+.step-icon{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;transition:.4s}
+.step-icon.done{background:rgba(48,209,88,0.15);box-shadow:0 0 0 4px rgba(48,209,88,0.08)}
+.step-icon.active{background:var(--gold-bg);box-shadow:0 0 0 4px rgba(201,164,82,0.1);animation:pulse-gold 1.8s infinite}
+.step-icon.wait{background:var(--dark3)}
+@keyframes pulse-gold{0%,100%{box-shadow:0 0 0 4px rgba(201,164,82,0.1)}50%{box-shadow:0 0 0 8px rgba(201,164,82,0.04)}}
+.step-title{font-size:14px;font-weight:600;color:var(--text)}
+.step-title.muted{color:var(--text3)}
+.step-desc{font-size:12px;color:var(--text3);margin-top:2px}
 
-.order-summary-card{background:var(--creme2);border-radius:var(--r);padding:14px 16px;border:1.5px solid var(--creme3);margin-bottom:14px}
-.os-title{font-size:11px;font-weight:600;letter-spacing:.06em;color:var(--brown3);text-transform:uppercase;margin-bottom:8px}
-.os-item{font-size:13px;color:var(--brown);padding:2px 0}
-.os-total{font-size:14px;font-weight:700;color:var(--brown);border-top:1.5px solid var(--creme3);padding-top:8px;margin-top:6px}
-
-.ready-banner{background:var(--green);border-radius:var(--rl);padding:20px;text-align:center;margin-bottom:14px;animation:pop-in .4s cubic-bezier(.34,1.56,.64,1)}
+/* Ready banner */
+.ready-banner{background:linear-gradient(135deg,rgba(48,209,88,0.15),rgba(48,209,88,0.06));border-radius:var(--rl);padding:20px;border:1px solid rgba(48,209,88,0.3);margin-bottom:12px;text-align:center;animation:pop-in .4s cubic-bezier(.34,1.56,.64,1)}
 @keyframes pop-in{from{transform:scale(0.9);opacity:0}to{transform:scale(1);opacity:1}}
 .ready-icon{font-size:36px;margin-bottom:8px}
-.ready-text{font-family:'Playfair Display',serif;font-size:20px;color:#fff;margin-bottom:4px}
-.ready-sub{font-size:13px;color:rgba(255,255,255,0.8)}
+.ready-text{font-family:'Playfair Display',serif;font-size:20px;color:var(--green);margin-bottom:4px}
+.ready-sub{font-size:13px;color:var(--text3)}
 
-/* TOAST */
-.toast{position:fixed;bottom:100px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--brown);color:var(--creme);padding:12px 20px;border-radius:var(--rx);font-size:13px;font-weight:500;opacity:0;transition:.3s;pointer-events:none;white-space:nowrap;z-index:999}
-.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+/* Order summary on status */
+.order-mini-card{background:var(--dark2);border-radius:var(--r);padding:14px 16px;border:var(--border2);margin-bottom:12px}
+.omc-title{font-size:11px;font-weight:600;letter-spacing:.06em;color:var(--gold);text-transform:uppercase;margin-bottom:8px}
+.omc-item{font-size:13px;color:var(--text2);padding:2px 0}
+.omc-total{font-size:14px;font-weight:700;color:var(--text);border-top:var(--border2);padding-top:8px;margin-top:6px;display:flex;justify-content:space-between}
 
-/* PAYMENT SCREEN */
-.pay-screen-amount{background:var(--brown);padding:28px 20px;text-align:center;flex-shrink:0}
-.psa-label{font-size:12px;letter-spacing:.08em;color:rgba(250,247,242,0.5);margin-bottom:6px}
-.psa-amount{font-family:'Playfair Display',serif;font-size:42px;font-weight:700;color:var(--creme);line-height:1}
-.psa-method{font-size:13px;color:rgba(250,247,242,0.6);margin-top:6px}
-.pay-body{padding:20px}
+/* Received btn */
+.received-btn{width:100%;padding:17px;border-radius:var(--rx);background:var(--green-bg);color:var(--green);border:1px solid rgba(48,209,88,0.3);font-size:16px;font-weight:700;font-family:'DM Sans',sans-serif;cursor:pointer;transition:.15s;margin-bottom:10px}
+.received-btn:active{background:rgba(48,209,88,0.22);transform:scale(0.98)}
 
-/* GCash / Maya panel */
-.ewallet-panel{background:var(--white);border-radius:var(--rl);border:1.5px solid var(--creme2);overflow:hidden;margin-bottom:16px}
-.ewallet-header{padding:16px 18px 12px;border-bottom:1.5px solid var(--creme2);display:flex;align-items:center;gap:12px}
-.ewallet-logo{width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
-.ewallet-logo.gcash{background:#007DFF}
-.ewallet-logo.maya{background:#00AA6C}
-.ewallet-name{font-size:16px;font-weight:700;color:var(--brown)}
-.ewallet-sub{font-size:12px;color:var(--brown3)}
-.qr-wrap{padding:20px;text-align:center}
-.qr-box{width:160px;height:160px;margin:0 auto 14px;border:2px solid var(--creme3);border-radius:12px;display:flex;align-items:center;justify-content:center;position:relative;background:var(--white)}
-.qr-placeholder{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;width:112px;height:112px}
-.qr-cell{border-radius:1px}
-.ewallet-number{font-size:15px;font-weight:700;color:var(--brown);letter-spacing:.04em}
-.ewallet-number-label{font-size:11px;color:var(--brown3);margin-bottom:4px}
-.ewallet-note{font-size:12px;color:var(--brown3);line-height:1.5;padding:0 18px 16px;text-align:center}
-.pay-confirm-btn{width:100%;padding:14px;border-radius:var(--r);background:var(--green-l);border:1.5px solid #6ECA98;color:var(--green);font-weight:700;font-size:14px;cursor:pointer;font-family:'DM Sans',sans-serif;margin:0 18px 18px;width:calc(100% - 36px);display:block}
-.pay-confirm-btn:active{background:#C0EDD4}
-
-/* Card panel */
-.card-panel{background:var(--white);border-radius:var(--rl);border:1.5px solid var(--creme2);overflow:hidden;margin-bottom:16px}
-.card-visual{background:linear-gradient(135deg,#2C1A0E 0%,#5C3D2E 100%);padding:22px 20px 18px;position:relative;overflow:hidden}
-.card-visual::before{content:'';position:absolute;top:-20px;right:-20px;width:120px;height:120px;border-radius:50%;background:rgba(255,255,255,0.04)}
-.card-visual::after{content:'';position:absolute;bottom:-30px;left:20px;width:100px;height:100px;border-radius:50%;background:rgba(255,255,255,0.03)}
-.card-chip-icon{width:32px;height:24px;background:linear-gradient(135deg,#C47D2E,#E8A84E);border-radius:4px;margin-bottom:16px}
-.card-num-display{font-size:17px;letter-spacing:.14em;color:rgba(255,255,255,0.9);margin-bottom:14px;font-family:monospace}
-.card-meta{display:flex;justify-content:space-between}
-.card-meta-item label{font-size:9px;letter-spacing:.08em;color:rgba(255,255,255,0.4);display:block;margin-bottom:2px}
-.card-meta-item span{font-size:13px;color:rgba(255,255,255,0.85);font-family:monospace;letter-spacing:.06em}
-.card-form{padding:16px 18px}
-.cf-label{font-size:11px;font-weight:600;color:var(--brown3);letter-spacing:.04em;margin-bottom:5px;display:block}
-.cf-input{width:100%;padding:12px 14px;border-radius:var(--r);border:1.5px solid var(--creme3);background:var(--creme);font-size:15px;font-family:'DM Sans',sans-serif;color:var(--brown);outline:none;transition:border-color .2s;margin-bottom:14px}
-.cf-input:focus{border-color:var(--brown2);background:var(--white)}
-.cf-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-
-/* PAYMENT REDIRECT */
-.pay-redirect-wrap{text-align:center;padding:60px 32px}
-.pay-redirect-icon{font-size:52px;margin-bottom:20px;animation:float 2s ease-in-out infinite}
-.pay-redirect-title{font-family:'Playfair Display',serif;font-size:22px;color:var(--creme);margin-bottom:10px}
-.pay-redirect-sub{font-size:13px;color:rgba(250,247,242,0.6);line-height:1.6}
-.pay-verified{background:var(--green-l);border-radius:var(--rl);padding:20px;text-align:center;margin:20px}
-.pv-icon{font-size:40px;margin-bottom:8px}
-.pv-title{font-family:'Playfair Display',serif;font-size:20px;color:var(--green);margin-bottom:4px}
-.pv-sub{font-size:13px;color:var(--brown3)}
+/* ══ THANK YOU ═══════════════════════════════════ */
+#screen-thankyou{background:var(--black);justify-content:center;align-items:center}
+.ty-content{text-align:center;padding:40px 32px;display:flex;flex-direction:column;align-items:center;gap:0}
+.ty-logo{width:90px;height:90px;object-fit:contain;border-radius:16px;margin-bottom:24px;animation:float 3s ease-in-out infinite}
+.ty-ring{width:72px;height:72px;border-radius:50%;background:var(--green-bg);border:1px solid rgba(48,209,88,0.3);display:flex;align-items:center;justify-content:center;font-size:32px;margin-bottom:20px;animation:pop-in .5s cubic-bezier(.34,1.56,.64,1)}
+.ty-title{font-family:'Playfair Display',serif;font-size:30px;font-weight:900;color:var(--text);line-height:1.1;margin-bottom:8px}
+.ty-title span{color:var(--gold)}
+.ty-sub{font-size:14px;color:var(--text3);line-height:1.6;margin-bottom:32px}
+.ty-order{background:var(--dark2);border-radius:var(--r);padding:14px 20px;border:var(--border);margin-bottom:32px;width:100%}
+.ty-order-label{font-size:11px;color:var(--text3);letter-spacing:.06em;text-transform:uppercase;margin-bottom:4px}
+.ty-order-num{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:var(--gold)}
+.ty-divider{width:40px;height:1px;background:var(--gold);opacity:0.3;margin:0 auto 24px}
+.ty-again-btn{width:100%;padding:16px;border-radius:var(--rx);background:var(--gold);color:var(--black);border:none;font-size:15px;font-weight:700;font-family:'DM Sans',sans-serif;cursor:pointer;transition:.15s;margin-bottom:12px}
+.ty-again-btn:active{background:var(--gold-l)}
+.ty-share{font-size:13px;color:var(--text3);cursor:pointer;padding:8px}
 </style>
 </head>
 <body>
 <div id="app">
 
-  <!-- SPLASH -->
-  <div class="screen" id="screen-splash">
-    <div class="splash-bg"></div>
-    <div class="splash-content">
-      <div class="splash-logo">☕</div>
-      <div class="splash-name">Yanna's <span>Cafe</span></div>
-      <div class="splash-tag">AUTHENTIC VIETNAMESE COFFEE &amp; FOOD</div>
-      <button class="splash-btn" onclick="goTo('menu')">Order Drive-Thru</button>
-      <div class="splash-tagline">Pay ahead · Skip the wait · Always fresh</div>
+<!-- ══ SPLASH ══ -->
+<div class="screen" id="screen-splash">
+  <div class="splash-top">
+    <div class="splash-logo-wrap">
+      <img src="https://raw.githubusercontent.com/digisyn-co/yannas-cafe-order/main/logo.png" alt="Yanna's Vietnamese Coffee">
     </div>
+    <div class="splash-gold-line"></div>
+    <div class="splash-title">Yanna's <span>Coffee</span></div>
+    <div class="splash-sub">Authentic Vietnamese Coffee &amp; Food</div>
   </div>
+  <div class="splash-bottom">
+    <button class="splash-cta" onclick="goTo('menu')">Order Drive-Thru →</button>
+    <div class="splash-tagline">Order ahead · Pay on arrival · Always fresh</div>
+  </div>
+</div>
 
-  <!-- MENU -->
-  <div class="screen hidden" id="screen-menu">
-    <div class="menu-hero">
-      <div style="display:flex;justify-content:space-between;align-items:flex-start">
-        <div>
-          <div class="menu-hero-text">What are you having?</div>
-          <div class="menu-hero-sub">San Enrique, Iloilo · Drive-Thru</div>
-        </div>
+<!-- ══ MENU ══ -->
+<div class="screen hidden" id="screen-menu">
+  <div class="menu-header">
+    <div class="menu-header-top">
+      <div>
+        <div class="menu-greeting">Good day ☕</div>
+        <div class="menu-title">What are you having?</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px">
+        <img src="https://raw.githubusercontent.com/digisyn-co/yannas-cafe-order/main/logo.png" class="menu-logo" alt="logo">
         <div class="cart-btn" onclick="goTo('cart')">
           🛒
           <span class="cart-badge" id="cart-badge">0</span>
@@ -287,144 +271,170 @@ html,body{height:100%;height:100dvh;background:var(--creme);color:var(--brown);f
       </div>
     </div>
     <div class="cat-scroll" id="cat-scroll"></div>
-    <div class="screen-body" id="menu-body">
-      <div id="menu-list"></div>
-      <div class="menu-bottom-pad"></div>
-    </div>
-    <button class="cart-fab hidden" id="cart-fab" onclick="goTo('cart')">
-      <span class="fab-count" id="fab-count">0</span>
-      View Order
-      <span class="fab-total" id="fab-total">₱0</span>
-    </button>
   </div>
-
-  <!-- CART -->
-  <div class="screen hidden" id="screen-cart">
-    <div class="topbar">
-      <button class="back-btn" onclick="goBack()">←</button>
-      <div class="topbar-title">Your Order</div>
-    </div>
-    <div class="screen-body" id="cart-body">
-      <div class="cart-section" id="cart-items-wrap"></div>
-    </div>
-    <div class="cta-wrap">
-      <button class="cta-btn" id="cart-cta" onclick="goTo('details')">Continue to Details →</button>
-    </div>
+  <div class="screen-body" id="menu-body">
+    <div id="menu-list"></div>
+    <div class="menu-bottom-pad"></div>
   </div>
-
-  <!-- DETAILS -->
-  <div class="screen hidden" id="screen-details">
-    <div class="topbar">
-      <button class="back-btn" onclick="goBack()">←</button>
-      <div class="topbar-title">Your Details</div>
-    </div>
-    <div class="screen-body">
-      <div class="det-section">
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-          <div>
-            <div class="field-label">FIRST NAME <span style="color:var(--red)">*</span></div>
-            <input class="field-input" id="customer-fname" placeholder="Maria" maxlength="30" oninput="validateDetails()" style="margin-bottom:0">
-          </div>
-          <div>
-            <div class="field-label">LAST NAME <span style="color:var(--red)">*</span></div>
-            <input class="field-input" id="customer-lname" placeholder="Santos" maxlength="30" oninput="validateDetails()" style="margin-bottom:0">
-          </div>
-        </div>
-        <div style="margin-bottom:16px"></div>
-        <div class="field-label">PHONE NUMBER <span style="color:var(--red)">*</span></div>
-        <input class="field-input" id="customer-phone" placeholder="09XX XXX XXXX" maxlength="13" type="tel" inputmode="numeric" oninput="validateDetails()">
-        <div class="field-label">PAYMENT METHOD</div>
-        <div class="pay-opts" style="grid-template-columns:1fr 1fr 1fr">
-          <div class="pay-opt selected" id="pay-gcash" onclick="selectPay('GCash')">
-            <div class="po-icon">📱</div><div class="po-name">GCash</div>
-          </div>
-          <div class="pay-opt" id="pay-maya" onclick="selectPay('Maya')">
-            <div class="po-icon">💚</div><div class="po-name">Maya</div>
-          </div>
-          <div class="pay-opt" id="pay-card" onclick="selectPay('Card')">
-            <div class="po-icon">💳</div><div class="po-name">Card</div>
-          </div>
-        </div>
-        <div style="background:var(--amber-l);border-radius:var(--r);padding:13px 16px;border:1.5px solid #FBBF8A;font-size:13px;color:#854F0B;line-height:1.5">
-          💡 <strong>Pay on arrival</strong> — show this order to the cashier and pay via your selected method. Your order will be freshly prepared based on your ETA.
-        </div>
-      </div>
-    </div>
-    <div class="cta-wrap">
-      <button class="cta-btn" id="details-cta" onclick="goTo('eta')" disabled>Set Your Arrival Time →</button>
-    </div>
-  </div>
-
-  <!-- ETA -->
-  <div class="screen hidden" id="screen-eta">
-    <div class="topbar">
-      <button class="back-btn" onclick="goBack()">←</button>
-      <div class="topbar-title">When are you arriving?</div>
-    </div>
-    <div class="screen-body">
-      <div class="eta-section">
-        <div class="eta-intro">
-          <div class="eta-intro-icon">🚗</div>
-          <div class="eta-intro-text">We'll start preparing your order when you're <strong>5–7 minutes away</strong> so everything is fresh when you arrive.</div>
-        </div>
-        <div class="eta-opts" id="eta-opts">
-          <div class="eta-opt" data-min="5" onclick="selectEta(5)"><div class="eo-min">5</div><div class="eo-label">minutes away</div></div>
-          <div class="eta-opt" data-min="10" onclick="selectEta(10)"><div class="eo-min">10</div><div class="eo-label">minutes away</div></div>
-          <div class="eta-opt" data-min="15" onclick="selectEta(15)"><div class="eo-min">15</div><div class="eo-label">minutes away</div></div>
-          <div class="eta-opt" data-min="20" onclick="selectEta(20)"><div class="eo-min">20</div><div class="eo-label">minutes away</div></div>
-        </div>
-        <div class="eta-gps" id="gps-btn" onclick="detectGPS()">
-          <div class="eta-gps-icon" id="gps-icon">📍</div>
-          <div><div class="eta-gps-text" id="gps-text">Use my current location</div><div class="eta-gps-sub" id="gps-sub">Tap to auto-detect your ETA</div></div>
-        </div>
-      </div>
-    </div>
-    <div class="cta-wrap">
-      <button class="cta-btn green" id="eta-cta" onclick="initPayment()" disabled>Continue to Payment →</button>
-    </div>
-  </div>
-
-
-  <!-- PROCESSING -->
-  <div class="screen hidden" id="screen-processing">
-    <div class="proc-content">
-      <div class="proc-spinner"></div>
-      <div class="proc-title">Placing your order…</div>
-      <div class="proc-sub">Connecting to Yanna's kitchen</div>
-    </div>
-  </div>
-
-  <!-- STATUS / TRACKING -->
-  <div class="screen hidden" id="screen-status">
-    <div class="status-hero">
-      <div class="status-order-num" id="st-order-num">ORDER #DT-0001</div>
-      <div class="status-name" id="st-name">Your order is on the way!</div>
-      <div class="status-sub" id="st-sub">We'll start preparing when you're close</div>
-    </div>
-    <div class="screen-body">
-      <div class="tracker-wrap">
-        <div id="ready-banner-wrap"></div>
-        <div class="tracker-card" id="timer-card">
-          <div class="eta-countdown green-t" id="eta-countdown">--:--</div>
-          <div class="eta-countdown-label">until your estimated arrival</div>
-          <div class="prog-bar"><div class="prog-fill" id="prog-fill" style="width:0%;background:var(--green)"></div></div>
-          <div class="prog-labels"><span>Now</span><span id="arrival-time-label">Arrival</span></div>
-        </div>
-        <div class="steps-card" id="steps-card"></div>
-        <div class="order-summary-card" id="order-summary-card"></div>
-      </div>
-    </div>
-  </div>
-
+  <button class="cart-fab hidden" id="cart-fab" onclick="goTo('cart')">
+    <span class="fab-count" id="fab-count">0</span>
+    View Order
+    <span class="fab-total" id="fab-total">₱0</span>
+  </button>
 </div>
 
+<!-- ══ CART ══ -->
+<div class="screen hidden" id="screen-cart">
+  <div class="topbar">
+    <button class="back-btn" onclick="goBack()">←</button>
+    <div class="topbar-title">Your Order</div>
+  </div>
+  <div class="screen-body">
+    <div class="cart-section" id="cart-items-wrap"></div>
+  </div>
+  <div class="cta-wrap">
+    <button class="cta-btn" id="cart-cta" onclick="goTo('details')" disabled>Continue →</button>
+  </div>
+</div>
+
+<!-- ══ DETAILS ══ -->
+<div class="screen hidden" id="screen-details">
+  <div class="topbar">
+    <button class="back-btn" onclick="goBack()">←</button>
+    <div class="topbar-title">Your Details</div>
+  </div>
+  <div class="screen-body">
+    <div class="det-section">
+      <div class="name-row">
+        <div>
+          <div class="field-label">First Name <span class="req">*</span></div>
+          <input class="field-input" id="customer-fname" placeholder="Maria" maxlength="30" oninput="validateDetails()">
+        </div>
+        <div>
+          <div class="field-label">Last Name <span class="req">*</span></div>
+          <input class="field-input" id="customer-lname" placeholder="Santos" maxlength="30" oninput="validateDetails()">
+        </div>
+      </div>
+      <div class="field-group">
+        <div class="field-label">Phone Number <span class="req">*</span></div>
+        <input class="field-input" id="customer-phone" placeholder="09XX XXX XXXX" maxlength="13" type="tel" inputmode="numeric" oninput="validateDetails()">
+      </div>
+      <div class="field-label" style="margin-bottom:10px">Payment Method</div>
+      <div class="pay-opts">
+        <div class="pay-opt selected" id="pay-gcash" onclick="selectPay('GCash')">
+          <div class="po-icon">📱</div><div class="po-name">GCash</div>
+        </div>
+        <div class="pay-opt" id="pay-maya" onclick="selectPay('Maya')">
+          <div class="po-icon">💚</div><div class="po-name">Maya</div>
+        </div>
+        <div class="pay-opt" id="pay-card" onclick="selectPay('Card')">
+          <div class="po-icon">💳</div><div class="po-name">Card</div>
+        </div>
+      </div>
+      <div class="info-box">💡 <strong style="color:var(--gold)">Pay on arrival</strong> — show your order at the drive-thru window and pay via your selected method. Your order is freshly prepared based on your ETA.</div>
+    </div>
+  </div>
+  <div class="cta-wrap">
+    <button class="cta-btn" id="details-cta" onclick="goTo('eta')" disabled>Set Arrival Time →</button>
+  </div>
+</div>
+
+<!-- ══ ETA ══ -->
+<div class="screen hidden" id="screen-eta">
+  <div class="topbar">
+    <button class="back-btn" onclick="goBack()">←</button>
+    <div class="topbar-title">When are you arriving?</div>
+  </div>
+  <div class="screen-body">
+    <div class="eta-section">
+      <div class="eta-intro">
+        <div class="eta-intro-icon">🚗</div>
+        <div class="eta-intro-text">We start preparing your order when you're <strong>5–7 minutes away</strong> — so everything is perfectly fresh when you pull up.</div>
+      </div>
+      <div class="eta-opts">
+        <div class="eta-opt" data-min="5" onclick="selectEta(5)"><div class="eo-min">5</div><div class="eo-label">min away</div></div>
+        <div class="eta-opt" data-min="10" onclick="selectEta(10)"><div class="eo-min">10</div><div class="eo-label">min away</div></div>
+        <div class="eta-opt" data-min="15" onclick="selectEta(15)"><div class="eo-min">15</div><div class="eo-label">min away</div></div>
+        <div class="eta-opt" data-min="20" onclick="selectEta(20)"><div class="eo-min">20</div><div class="eo-label">min away</div></div>
+      </div>
+      <div class="eta-gps" id="gps-btn" onclick="detectGPS()">
+        <div style="font-size:22px" id="gps-icon">📍</div>
+        <div><div class="eta-gps-text" id="gps-text">Use my current location</div><div class="eta-gps-sub" id="gps-sub">Auto-detect your drive time</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="cta-wrap">
+    <button class="cta-btn" id="eta-cta" onclick="initPayment()" disabled>Review Order →</button>
+  </div>
+</div>
+
+<!-- ══ PROCESSING ══ -->
+<div class="screen hidden" id="screen-processing">
+  <div class="proc-content">
+    <img src="https://raw.githubusercontent.com/digisyn-co/yannas-cafe-order/main/logo.png" class="proc-logo" alt="Yanna's">
+    <div class="proc-ring"></div>
+    <div class="proc-title" id="proc-title">Placing your order…</div>
+    <div class="proc-sub" id="proc-sub">Connecting to Yanna's kitchen</div>
+  </div>
+</div>
+
+<!-- ══ STATUS ══ -->
+<div class="screen hidden" id="screen-status">
+  <div class="status-header">
+    <div class="status-header-top">
+      <div style="display:flex;align-items:center;gap:8px">
+        <span class="status-live-dot"></span>
+        <span style="font-size:12px;color:var(--green);font-weight:600">Live</span>
+      </div>
+      <div class="status-order-badge" id="st-order-num">#DT-0001</div>
+    </div>
+    <div class="status-name" id="st-name">Order confirmed!</div>
+    <div class="status-sub" id="st-sub">We'll start prepping when you're close</div>
+    <div class="status-tabs">
+      <div class="s-tab active">Tracking</div>
+      <div class="s-tab" onclick="document.getElementById('order-summary-card').scrollIntoView({behavior:'smooth'})">Order</div>
+    </div>
+  </div>
+  <div class="screen-body">
+    <div style="padding:16px 20px 24px">
+      <div id="ready-banner-wrap"></div>
+      <div class="timer-card">
+        <div class="timer-label">Time until your arrival</div>
+        <div class="eta-countdown green-t" id="eta-countdown">--:--</div>
+        <div class="prog-bar"><div class="prog-fill" id="prog-fill" style="width:0%;background:var(--green)"></div></div>
+        <div class="prog-labels"><span>Now</span><span id="arrival-time-label">Arrival</span></div>
+      </div>
+      <div class="steps-card" id="steps-card"></div>
+      <div id="received-btn-wrap"></div>
+      <div class="order-mini-card" id="order-summary-card"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ THANK YOU ══ -->
+<div class="screen hidden" id="screen-thankyou">
+  <div class="ty-content">
+    <img src="https://raw.githubusercontent.com/digisyn-co/yannas-cafe-order/main/logo.png" class="ty-logo" alt="Yanna's">
+    <div class="ty-ring">✓</div>
+    <div class="ty-title">Thank <span>You!</span></div>
+    <div class="ty-sub" id="ty-sub">We hope you enjoyed your order.<br>See you next time!</div>
+    <div class="ty-divider"></div>
+    <div class="ty-order">
+      <div class="ty-order-label">Order Number</div>
+      <div class="ty-order-num" id="ty-order-num">#DT-0001</div>
+    </div>
+    <button class="ty-again-btn" onclick="orderAgain()">Order Again →</button>
+    <div class="ty-share" onclick="shareApp()">Share Yanna's with a friend ↗</div>
+  </div>
+</div>
+
+</div><!-- #app -->
 <div class="toast" id="toast"></div>
 
 <script>
 const SUPABASE_URL='https://dgjtpxdbztnokfbmfjbw.supabase.co';
 const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRnanRweGRienRub2tmYm1mamJ3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk3NjY5NDAsImV4cCI6MjA5NTM0Mjk0MH0.uUyk7ppnom9PI--Fs_5wdhqQD-dtAmpB5Gv1hup6dAk';
-
-const CAFE_LAT=10.9402, CAFE_LNG=122.6278; // San Enrique, Iloilo — update to exact coords
+const CAFE_LAT=10.9402,CAFE_LNG=122.6278;
 
 const MENU=[
   {id:1,name:'Black Coffee',cat:'Coffee',hotPrice:105,coldPrice:120,badge:'bc',hastemp:true},
@@ -447,26 +457,24 @@ const MENU=[
   {id:18,name:'Beef + Black Coffee',cat:'Combo',hotPrice:245,coldPrice:260,badge:'bco',hastemp:true},
 ];
 
-let sb, cart=[], currentScreen='splash', screenStack=['splash'];
-let selectedPay='GCash', selectedEta=null, currentOrderId=null, statusInterval=null;
-let currentOrderData=null;
+let sb,cart=[],currentScreen='splash',screenStack=['splash'];
+let selectedPay='GCash',selectedEta=null,statusInterval=null,currentOrderData=null;
 
-// ── INIT ──────────────────────────────────────
 window.onload=()=>{
   sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
   renderMenu();
 };
 
-// ── NAVIGATION ────────────────────────────────
+// ── NAV ───────────────────────────────────────────
 function goTo(screen){
   const prev=currentScreen;
-  document.getElementById('screen-'+prev).classList.add(prev==='splash'?'hidden':'slide-left');
-  document.getElementById('screen-'+screen).classList.remove('hidden','slide-left');
-  screenStack.push(screen);
-  currentScreen=screen;
+  const prevEl=document.getElementById('screen-'+prev);
+  if(prevEl) prevEl.classList.add(prev==='splash'?'hidden':'slide-left');
+  const nextEl=document.getElementById('screen-'+screen);
+  if(nextEl) nextEl.classList.remove('hidden','slide-left');
+  screenStack.push(screen);currentScreen=screen;
   if(screen==='cart') renderCart();
   if(screen==='details') validateDetails();
-  if(screen==='payment') {};
 }
 function goBack(){
   screenStack.pop();
@@ -476,13 +484,13 @@ function goBack(){
   currentScreen=prev;
 }
 
-// ── MENU ──────────────────────────────────────
+// ── MENU ──────────────────────────────────────────
 const CATS=['All','Coffee','Matcha','Fruit Tea','Food','Combo'];
 let activeMenuCat='All';
 
 function renderMenu(){
-  const catScroll=document.getElementById('cat-scroll');
-  catScroll.innerHTML=CATS.map(c=>`<button class="cat-chip ${c===activeMenuCat?'active':''}" onclick="filterCat('${c}')">${c}</button>`).join('');
+  const catEl=document.getElementById('cat-scroll');
+  catEl.innerHTML=CATS.map(c=>`<button class="cat-chip${c===activeMenuCat?' active':''}" onclick="filterCat('${c}')">${c}</button>`).join('');
   const filtered=activeMenuCat==='All'?MENU:MENU.filter(i=>i.cat===activeMenuCat);
   const cats=[...new Set(filtered.map(i=>i.cat))];
   document.getElementById('menu-list').innerHTML=cats.map(cat=>`
@@ -498,7 +506,7 @@ function filterCat(cat){activeMenuCat=cat;renderMenu();}
 function renderMenuItem(item){
   const star=item.star?'⭐ ':'';
   if(item.hastemp){
-    return `<div class="menu-item hc-card">
+    return`<div class="menu-item hc-card">
       <div class="mi-top"><div class="mi-name">${star}${item.name}</div><span class="mi-badge ${item.badge}">${item.cat}</span></div>
       <div class="hc-row">
         <div class="hc-opt hot" onclick="addToCart(${item.id},'Hot')">
@@ -512,9 +520,9 @@ function renderMenuItem(item){
       </div>
     </div>`;
   }
-  return `<div class="menu-item">
+  return`<div class="menu-item">
     <div class="mi-top"><div class="mi-name">${star}${item.name}</div><span class="mi-badge ${item.badge}">${item.cat}</span></div>
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-top:6px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px">
       <div class="mi-price">₱${item.price}</div>
       <button class="add-plain-btn" style="width:auto;padding:8px 18px;margin:0" onclick="addToCart(${item.id})">+ Add</button>
     </div>
@@ -525,15 +533,11 @@ function addToCart(id,temp){
   const item=MENU.find(m=>m.id===id);
   const key=id+(temp||'');
   const existing=cart.find(c=>c.key===key);
-  if(existing){existing.qty++;} 
-  else {
-    const price=temp?(temp==='Hot'?item.hotPrice:item.coldPrice):item.price;
-    cart.push({key,id,name:item.name,cat:item.cat,temp:temp||null,price,qty:1});
-  }
+  if(existing){existing.qty++;}
+  else{const price=temp?(temp==='Hot'?item.hotPrice:item.coldPrice):item.price;cart.push({key,id,name:item.name,cat:item.cat,temp:temp||null,price,qty:1});}
   updateFab();
-  toast(item.name+(temp?' ('+temp+')':'')+' added');
+  toast((temp?'🔥 ':'')+(item.name)+' added');
 }
-
 function updateFab(){
   const fab=document.getElementById('cart-fab');
   const badge=document.getElementById('cart-badge');
@@ -545,23 +549,22 @@ function updateFab(){
   fab.classList.toggle('hidden',count===0);
 }
 
-// ── CART ──────────────────────────────────────
+// ── CART ──────────────────────────────────────────
 function renderCart(){
   const wrap=document.getElementById('cart-items-wrap');
   const total=cart.reduce((s,i)=>s+i.price*i.qty,0);
   const count=cart.reduce((s,i)=>s+i.qty,0);
   if(!cart.length){
-    wrap.innerHTML='<div class="cart-empty"><div class="cart-empty-icon">🛒</div><div>Your cart is empty</div></div>';
-    document.getElementById('cart-cta').disabled=true;
-    return;
+    wrap.innerHTML='<div class="cart-empty"><div style="font-size:48px;margin-bottom:12px">🛒</div><div>Your cart is empty</div></div>';
+    document.getElementById('cart-cta').disabled=true;return;
   }
   wrap.innerHTML=`
     ${cart.map(item=>`
       <div class="cart-item-row">
-        <div class="ci-info">
+        <div style="flex:1">
           <div class="ci-name">${item.name}${item.temp?' · '+item.temp:''}</div>
         </div>
-        <div style="display:flex;align-items:center;gap:4px">
+        <div style="display:flex;align-items:center;gap:6px">
           <span class="ci-price">₱${(item.price*item.qty).toLocaleString()}</span>
           <div class="qty-row">
             <button class="qb" onclick="changeQty('${item.key}',-1)">−</button>
@@ -576,136 +579,116 @@ function renderCart(){
     </div>`;
   document.getElementById('cart-cta').disabled=false;
 }
-
 function changeQty(key,delta){
-  const item=cart.find(c=>c.key===key);
-  if(!item) return;
-  item.qty+=delta;
-  if(item.qty<=0) cart=cart.filter(c=>c.key!==key);
-  updateFab();
-  renderCart();
+  const item=cart.find(c=>c.key===key);if(!item)return;
+  item.qty+=delta;if(item.qty<=0)cart=cart.filter(c=>c.key!==key);
+  updateFab();renderCart();
 }
 
-// ── DETAILS ───────────────────────────────────
+// ── DETAILS ───────────────────────────────────────
 function selectPay(method){
   selectedPay=method;
-  document.getElementById('pay-gcash').classList.toggle('selected',method==='GCash');
-  document.getElementById('pay-maya').classList.toggle('selected',method==='Maya');
-  document.getElementById('pay-card').classList.toggle('selected',method==='Card');
+  ['gcash','maya','card'].forEach(m=>document.getElementById('pay-'+m).classList.toggle('selected',method===m.charAt(0).toUpperCase()+m.slice(1)));
 }
 function validateDetails(){
   const fname=document.getElementById('customer-fname').value.trim();
   const lname=document.getElementById('customer-lname').value.trim();
   const phone=document.getElementById('customer-phone').value.trim();
-  const phoneOk=phone.replace(/\s/g,'').length>=10;
-  document.getElementById('details-cta').disabled=!(fname&&lname&&phoneOk);
+  document.getElementById('details-cta').disabled=!(fname&&lname&&phone.replace(/\s/g,'').length>=10);
 }
 
-// ── ETA ───────────────────────────────────────
+// ── ETA ───────────────────────────────────────────
 function selectEta(min){
   selectedEta=min;
-  document.querySelectorAll('.eta-opt').forEach(el=>{
-    el.classList.toggle('selected',parseInt(el.dataset.min)===min);
-  });
+  document.querySelectorAll('.eta-opt').forEach(el=>el.classList.toggle('selected',parseInt(el.dataset.min)===min));
   document.getElementById('eta-cta').disabled=false;
 }
-
 function detectGPS(){
-  const btn=document.getElementById('gps-btn');
   const icon=document.getElementById('gps-icon');
   const text=document.getElementById('gps-text');
   const sub=document.getElementById('gps-sub');
-  if(!navigator.geolocation){toast('GPS not available on this device');return;}
+  if(!navigator.geolocation){toast('GPS not available');return;}
   icon.textContent='⏳';text.textContent='Detecting location…';
   navigator.geolocation.getCurrentPosition(pos=>{
     const dist=haversine(pos.coords.latitude,pos.coords.longitude,CAFE_LAT,CAFE_LNG);
-    const mins=Math.max(3,Math.round(dist/0.5)); // ~30km/h avg local road
-    const capped=Math.min(mins,30);
-    selectEta(capped);
-    icon.textContent='✅';
-    text.textContent=`${(dist).toFixed(1)} km away`;
-    sub.textContent=`Estimated ${capped} min drive`;
-    toast('Location detected! '+capped+' min away');
-  },err=>{
-    icon.textContent='📍';text.textContent='Use my current location';sub.textContent='Tap to auto-detect your ETA';
-    toast('Could not get location — pick manually');
-  },{timeout:8000});
+    const mins=Math.min(Math.max(3,Math.round(dist/0.5)),30);
+    selectEta(mins);
+    icon.textContent='✅';text.textContent=`${dist.toFixed(1)} km away`;sub.textContent=`Estimated ${mins} min drive`;
+    toast('Location detected — '+mins+' min away');
+  },()=>{icon.textContent='📍';text.textContent='Use my current location';sub.textContent='Auto-detect your drive time';toast('Could not get location');},{timeout:8000});
 }
-
 function haversine(lat1,lon1,lat2,lon2){
   const R=6371,dLat=(lat2-lat1)*Math.PI/180,dLon=(lon2-lon1)*Math.PI/180;
   const a=Math.sin(dLat/2)**2+Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLon/2)**2;
   return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
 }
 
-
 // ── PAYMENT CONFIRM ───────────────────────────────
 function initPayment(){
-  if(!selectedEta){toast('Please select your ETA first');return;}
   const fname=document.getElementById('customer-fname').value.trim();
   const lname=document.getElementById('customer-lname').value.trim();
   const phone=document.getElementById('customer-phone').value.trim();
   if(!fname||!lname||!phone){toast('Please complete your details');return;}
   showOrderConfirm();
 }
-
 function showOrderConfirm(){
   const total=cart.reduce((s,i)=>s+i.price*i.qty,0);
   const fname=document.getElementById('customer-fname').value.trim();
   const lname=document.getElementById('customer-lname').value.trim();
   const phone=document.getElementById('customer-phone').value.trim();
-  const existingModal=document.getElementById('confirm-modal');
-  if(existingModal) existingModal.remove();
+  const existing=document.getElementById('confirm-modal');if(existing)existing.remove();
   const itemsHtml=cart.map(i=>`
-    <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1.5px solid #E8DFD0;font-size:13px">
-      <span style="color:#2C1A0E">${i.qty}&times; ${i.name}${i.temp?' &middot; '+i.temp:''}</span>
-      <span style="font-weight:600;color:#1D6B44">&#8369;${(i.price*i.qty).toLocaleString()}</span>
+    <div style="display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid rgba(242,239,232,0.07);font-size:13px">
+      <span style="color:rgba(242,239,232,0.75)">${i.qty}&times; ${i.name}${i.temp?' &middot; '+i.temp:''}</span>
+      <span style="font-weight:700;color:#C9A452">&#8369;${(i.price*i.qty).toLocaleString()}</span>
     </div>`).join('');
   const modal=document.createElement('div');
   modal.id='confirm-modal';
-  modal.style.cssText='position:fixed;inset:0;background:rgba(44,26,14,0.6);z-index:300;display:flex;align-items:flex-end;justify-content:center';
+  modal.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:300;display:flex;align-items:flex-end;justify-content:center;backdrop-filter:blur(4px)';
   modal.innerHTML=`
-    <div style="background:#FAF7F2;border-radius:24px 24px 0 0;width:100%;max-width:480px;padding:24px 20px 40px;max-height:85vh;overflow-y:auto">
-      <div style="width:40px;height:4px;background:#E8DFD0;border-radius:2px;margin:0 auto 20px"></div>
-      <div style="font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:#2C1A0E;margin-bottom:4px">Confirm Order</div>
-      <div style="font-size:13px;color:#8B6347;margin-bottom:20px">Review before placing</div>
-      <div style="background:#fff;border-radius:14px;border:1.5px solid #F3EDE3;padding:16px;margin-bottom:12px">
-        <div style="font-size:11px;font-weight:600;letter-spacing:.06em;color:#8B6347;text-transform:uppercase;margin-bottom:10px">Your Details</div>
-        <div style="font-size:14px;font-weight:600;color:#2C1A0E">${fname} ${lname}</div>
-        <div style="font-size:13px;color:#8B6347;margin-top:2px">${phone}</div>
-        <div style="font-size:13px;color:#8B6347;margin-top:2px">via ${selectedPay} &middot; ${selectedEta} min away</div>
+    <div style="background:#1C1C1E;border-radius:24px 24px 0 0;width:100%;max-width:480px;padding:24px 20px 44px;max-height:88vh;overflow-y:auto;border-top:1px solid rgba(201,164,82,0.2)">
+      <div style="width:36px;height:4px;background:rgba(242,239,232,0.15);border-radius:2px;margin:0 auto 20px"></div>
+      <div style="font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:#F2EFE8;margin-bottom:4px">Confirm Order</div>
+      <div style="font-size:13px;color:rgba(242,239,232,0.4);margin-bottom:20px">Review your details before placing</div>
+
+      <div style="background:#252528;border-radius:14px;border:1px solid rgba(201,164,82,0.15);padding:16px;margin-bottom:12px">
+        <div style="font-size:10px;font-weight:700;letter-spacing:.08em;color:#C9A452;text-transform:uppercase;margin-bottom:10px">Customer</div>
+        <div style="font-size:15px;font-weight:700;color:#F2EFE8">${fname} ${lname}</div>
+        <div style="font-size:13px;color:rgba(242,239,232,0.5);margin-top:3px">${phone} &middot; ${selectedPay} &middot; ${selectedEta} min away</div>
       </div>
-      <div style="background:#fff;border-radius:14px;border:1.5px solid #F3EDE3;padding:16px;margin-bottom:12px">
-        <div style="font-size:11px;font-weight:600;letter-spacing:.06em;color:#8B6347;text-transform:uppercase;margin-bottom:8px">Order Summary</div>
+
+      <div style="background:#252528;border-radius:14px;border:1px solid rgba(201,164,82,0.15);padding:16px;margin-bottom:12px">
+        <div style="font-size:10px;font-weight:700;letter-spacing:.08em;color:#C9A452;text-transform:uppercase;margin-bottom:8px">Order Summary</div>
         ${itemsHtml}
-        <div style="display:flex;justify-content:space-between;padding-top:10px;font-size:16px;font-weight:700;color:#2C1A0E">
-          <span>Total</span><span style="color:#1D6B44">&#8369;${total.toLocaleString()}</span>
+        <div style="display:flex;justify-content:space-between;padding-top:12px;font-size:17px;font-weight:700;color:#F2EFE8">
+          <span>Total</span><span style="color:#C9A452">&#8369;${total.toLocaleString()}</span>
         </div>
       </div>
-      <div style="background:#FDF3E3;border-radius:10px;padding:12px 14px;border:1.5px solid #FBBF8A;font-size:12px;color:#854F0B;margin-bottom:20px;line-height:1.5">
-        &#128179; Payment via <strong>${selectedPay}</strong> will be collected at the drive-thru window upon arrival.
+
+      <div style="background:rgba(201,164,82,0.07);border-radius:10px;padding:12px 14px;border:1px solid rgba(201,164,82,0.15);font-size:12px;color:rgba(242,239,232,0.55);line-height:1.6;margin-bottom:20px">
+        &#128179; Payment via <strong style="color:#C9A452">${selectedPay}</strong> is collected at the window upon arrival.
       </div>
-      <button onclick="document.getElementById('confirm-modal').remove();placeOrder()" style="width:100%;padding:16px;border-radius:24px;background:#1D6B44;color:#fff;border:none;font-size:16px;font-weight:700;font-family:'DM Sans',sans-serif;cursor:pointer;margin-bottom:10px">
+
+      <button onclick="document.getElementById('confirm-modal').remove();placeOrder()" style="width:100%;padding:17px;border-radius:50px;background:#C9A452;color:#141414;border:none;font-size:16px;font-weight:700;font-family:'DM Sans',sans-serif;cursor:pointer;margin-bottom:10px;letter-spacing:.01em">
         &#10003; Place Order
       </button>
-      <button onclick="document.getElementById('confirm-modal').remove()" style="width:100%;padding:14px;border-radius:24px;background:transparent;color:#8B6347;border:1.5px solid #E8DFD0;font-size:14px;font-family:'DM Sans',sans-serif;cursor:pointer">
+      <button onclick="document.getElementById('confirm-modal').remove()" style="width:100%;padding:14px;border-radius:50px;background:transparent;color:rgba(242,239,232,0.4);border:1px solid rgba(242,239,232,0.1);font-size:14px;font-family:'DM Sans',sans-serif;cursor:pointer">
         Go Back
       </button>
     </div>`;
   document.body.appendChild(modal);
 }
 
-// ── PLACE ORDER ───────────────────────────────
+// ── PLACE ORDER ───────────────────────────────────
 async function placeOrder(){
-  if(!selectedEta){toast('Please select your ETA first');return;}
   const fname=document.getElementById('customer-fname').value.trim();
   const lname=document.getElementById('customer-lname').value.trim();
   const phone=document.getElementById('customer-phone').value.trim();
   const name=fname+' '+lname;
-  if(!fname||!lname){toast('Please enter your full name');return;}
-  if(phone.replace(/\s/g,'').length<10){toast('Please enter a valid phone number');return;}
 
   goTo('processing');
+  document.getElementById('proc-title').textContent='Placing your order…';
+  document.getElementById('proc-sub').textContent='Connecting to Yanna\'s kitchen';
 
   const total=cart.reduce((s,i)=>s+i.price*i.qty,0);
   const today=new Date();
@@ -715,48 +698,38 @@ async function placeOrder(){
   const arrivalTime=new Date(Date.now()+selectedEta*60000).toISOString();
 
   const {data,error}=await sb.from('drive_thru_orders').insert({
-    order_number:orderNumber,
-    customer_name:name,
-    customer_phone:phone,
+    order_number:orderNumber,customer_name:name,customer_phone:phone,
     items:cart.map(i=>({id:i.id,name:i.name,qty:i.qty,price:i.price,cat:i.cat,temp:i.temp||null})),
-    total,
-    payment_method:selectedPay,
-    eta_minutes:selectedEta,
-    arrival_time:arrivalTime,
-    status:'incoming'
+    total,payment_method:selectedPay,eta_minutes:selectedEta,
+    arrival_time:arrivalTime,status:'incoming'
   }).select().single();
 
   if(error||!data){
     goBack();
-    const msg=error?.message||error?.details||'Unknown error';
-    toast('Order failed: '+msg.slice(0,60));
-    console.error('Supabase error:',JSON.stringify(error));
-    return;
+    toast('Order failed: '+(error?.message||'Try again'));
+    console.error(error);return;
   }
 
-  currentOrderId=data.id;
-  currentOrderData=data;
   cart=[];updateFab();
+  currentOrderData=data;
   startStatusTracking(data);
   goTo('status');
   screenStack=['splash','status'];
 }
 
-// ── STATUS TRACKING ───────────────────────────
+// ── STATUS TRACKING ───────────────────────────────
 function startStatusTracking(orderData){
   renderStatusScreen(orderData);
-  sb.channel('customer-order-'+orderData.id)
+  sb.channel('cust-order-'+orderData.id)
     .on('postgres_changes',{event:'UPDATE',schema:'public',table:'drive_thru_orders',filter:'id=eq.'+orderData.id},payload=>{
       currentOrderData={...currentOrderData,...payload.new};
       renderStatusScreen(currentOrderData);
       const s=payload.new.status;
       if(s==='preparing') toast('🔥 Your order is being prepared!');
-      if(s==='ready') toast('✅ Your order is ready! Pull up to the window.');
+      if(s==='ready') toast('✅ Your order is ready! Pull up now.');
     }).subscribe();
   if(statusInterval) clearInterval(statusInterval);
-  statusInterval=setInterval(()=>{
-    if(currentOrderData) updateCountdown(currentOrderData);
-  },1000);
+  statusInterval=setInterval(()=>{if(currentOrderData)updateCountdown(currentOrderData);},1000);
 }
 
 function renderStatusScreen(o){
@@ -764,41 +737,40 @@ function renderStatusScreen(o){
   document.getElementById('st-order-num').textContent=o.order_number;
   document.getElementById('st-name').textContent=
     status==='ready'?'Your order is ready! 🎉':
-    status==='preparing'?'We\'re making your order! 🔥':
-    'Order confirmed!';
+    status==='preparing'?'Being prepared now 🔥':'Order confirmed!';
   document.getElementById('st-sub').textContent=
-    status==='ready'?'Pull up to the window':
-    status==='preparing'?'Almost there — keep driving!':
-    'We\'ll start prepping when you\'re close';
+    status==='ready'?'Pull up to the drive-thru window':
+    status==='preparing'?'Almost there — keep driving!':'We\'ll start prepping when you\'re close';
 
   // Ready banner
-  const bannerWrap=document.getElementById('ready-banner-wrap');
-  if(status==='ready'){
-    bannerWrap.innerHTML=`<div class="ready-banner"><div class="ready-icon">✅</div><div class="ready-text">Order Ready for Pickup!</div><div class="ready-sub">Pull up to the drive-thru window · Show your order number</div></div>`;
-  } else bannerWrap.innerHTML='';
+  const bw=document.getElementById('ready-banner-wrap');
+  bw.innerHTML=status==='ready'?`<div class="ready-banner"><div class="ready-icon">✅</div><div class="ready-text">Order Ready for Pickup!</div><div class="ready-sub">Pull up to the window · Show order ${o.order_number}</div></div>`:'';
 
   // Steps
-  const steps=[
-    {key:'ordered',label:'Order confirmed',desc:'Payment on arrival via '+o.payment_method,icon:'✅'},
-    {key:'preparing',label:'Being prepared',desc:'Barista is making your order',icon:'🔥'},
-    {key:'ready',label:'Ready for pickup',desc:'Pull up to the window',icon:'🎉'},
-  ];
   const statusOrder=['incoming','preparing','ready','picked_up'];
-  const statusIdx=statusOrder.indexOf(status);
+  const si=statusOrder.indexOf(status);
+  const steps=[
+    {label:'Order confirmed',desc:'Payment at window via '+o.payment_method,icon:'✅'},
+    {label:'Being prepared',desc:'Barista is making your order',icon:'🔥'},
+    {label:'Ready for pickup',desc:'Pull up to the drive-thru window',icon:'🎉'},
+  ];
   document.getElementById('steps-card').innerHTML=steps.map((step,i)=>{
-    const state=i<statusIdx?'done':i===statusIdx-1||status==='incoming'&&i===0||(status!=='incoming'&&i===statusIdx-1)?'done':i===statusIdx?'active':'wait';
-    const cls=status==='incoming'&&i===0?'done':statusIdx>i+1?'done':statusIdx===i+1?'done':statusIdx===i?'active':'wait';
-    return `<div class="step-row">
+    const cls=si>i?'done':si===i?'active':'wait';
+    return`<div class="step-row">
       <div class="step-icon ${cls}">${step.icon}</div>
-      <div class="step-info"><div class="step-title ${cls==='wait'?'muted':''}">${step.label}</div><div class="step-desc">${step.desc}</div></div>
+      <div><div class="step-title ${cls==='wait'?'muted':''}">${step.label}</div><div class="step-desc">${step.desc}</div></div>
     </div>`;
   }).join('');
 
+  // Order Received button — show when ready
+  const rbw=document.getElementById('received-btn-wrap');
+  rbw.innerHTML=status==='ready'?`<button class="received-btn" onclick="markOrderReceived()">✓ I've Received My Order</button>`:'';
+
   // Order summary
   document.getElementById('order-summary-card').innerHTML=`
-    <div class="os-title">Your items</div>
-    ${(o.items||[]).map(i=>`<div class="os-item">${i.qty}× ${i.name}${i.temp?' ('+i.temp+')':''}</div>`).join('')}
-    <div class="os-total">Total: ₱${(o.total||0).toLocaleString()} · ${o.payment_method}</div>`;
+    <div class="omc-title">Your items</div>
+    ${(o.items||[]).map(i=>`<div class="omc-item">${i.qty}× ${i.name}${i.temp?' ('+i.temp+')':''}</div>`).join('')}
+    <div class="omc-total"><span>Total</span><span style="color:var(--gold)">₱${(o.total||0).toLocaleString()}</span></div>`;
 
   updateCountdown(o);
 }
@@ -810,17 +782,15 @@ function updateCountdown(o){
   const timerEl=document.getElementById('eta-countdown');
   const fillEl=document.getElementById('prog-fill');
   const labelEl=document.getElementById('arrival-time-label');
-  if(!timerEl) return;
+  if(!timerEl)return;
   if(labelEl) labelEl.textContent=arrival.toLocaleTimeString('en-PH',{hour:'2-digit',minute:'2-digit'});
   if(o.status==='ready'){
     timerEl.textContent='Ready!';timerEl.className='eta-countdown green-t';
-    if(fillEl){fillEl.style.width='100%';fillEl.style.background='var(--green)';}
-    return;
+    if(fillEl){fillEl.style.width='100%';fillEl.style.background='var(--green)';}return;
   }
   if(diffMs<=0){
     timerEl.textContent='Now!';timerEl.className='eta-countdown amber-t';
-    if(fillEl){fillEl.style.width='100%';fillEl.style.background='var(--amber)';}
-    return;
+    if(fillEl){fillEl.style.width='100%';fillEl.style.background='var(--amber)';}return;
   }
   const mins=Math.floor(diffMs/60000);
   const secs=Math.floor((diffMs%60000)/1000);
@@ -833,7 +803,39 @@ function updateCountdown(o){
   timerEl.className='eta-countdown '+(diffMs<180000?'red-t':diffMs<420000?'amber-t':'green-t');
 }
 
-// ── HELPERS ───────────────────────────────────
+// ── ORDER RECEIVED ────────────────────────────────
+async function markOrderReceived(){
+  if(!currentOrderData)return;
+  await sb.from('drive_thru_orders').update({status:'picked_up'}).eq('id',currentOrderData.id);
+  if(statusInterval){clearInterval(statusInterval);statusInterval=null;}
+  document.getElementById('ty-order-num').textContent=currentOrderData.order_number;
+  const name=currentOrderData.customer_name?.split(' ')[0]||'';
+  document.getElementById('ty-sub').textContent=`We hope you enjoyed your order${name?', '+name:''}.\nSee you next time! ☕`;
+  goTo('thankyou');
+  screenStack=['splash','thankyou'];
+}
+
+// ── THANK YOU ─────────────────────────────────────
+function orderAgain(){
+  currentOrderData=null;selectedEta=null;selectedPay='GCash';
+  document.getElementById('customer-fname').value='';
+  document.getElementById('customer-lname').value='';
+  document.getElementById('customer-phone').value='';
+  ['gcash','maya','card'].forEach(m=>document.getElementById('pay-'+m).classList.toggle('selected',m==='gcash'));
+  document.querySelectorAll('.eta-opt').forEach(el=>el.classList.remove('selected'));
+  screenStack=['splash'];currentScreen='thankyou';
+  goTo('menu');
+}
+function shareApp(){
+  if(navigator.share){
+    navigator.share({title:"Yanna's Vietnamese Coffee",text:'Order drive-thru ahead at Yanna\'s!',url:window.location.origin});
+  } else {
+    navigator.clipboard?.writeText(window.location.origin);
+    toast('Link copied!');
+  }
+}
+
+// ── HELPERS ───────────────────────────────────────
 function toast(msg){
   const el=document.getElementById('toast');
   el.textContent=msg;el.classList.add('show');
