@@ -86,6 +86,7 @@ html,body{height:100%;height:100dvh;background:var(--bg);color:var(--text);font-
 .bt{background:rgba(52,199,89,0.1);color:#30D158}
 .bf{background:rgba(240,232,214,0.07);color:var(--text2)}
 .bco{background:rgba(201,164,82,0.12);color:var(--gold)}
+.br{background:rgba(255,149,0,0.1);color:#FF9500}
 .bm{background:rgba(52,199,89,0.1);color:#30D158}
 .mi-options{display:flex;gap:8px}
 .mi-opt{flex:1;display:flex;align-items:center;justify-content:space-between;background:var(--warm2);border-radius:10px;padding:9px 12px;border:1px solid var(--sep);cursor:pointer;transition:.15s;gap:6px}
@@ -458,6 +459,9 @@ const MENU=[
   {id:16,name:'Pork + Salted Coffee',cat:'Combo',hotPrice:225,coldPrice:240,badge:'bco',hastemp:true},
   {id:17,name:'Chicken + Coconut Coffee',cat:'Combo',hotPrice:235,coldPrice:250,badge:'bco',hastemp:true},
   {id:18,name:'Beef + Black Coffee',cat:'Combo',hotPrice:245,coldPrice:260,badge:'bco',hastemp:true},
+  {id:19,name:'Pork Crunchy Egg Fried Rice',cat:'Rice',price:130,badge:'br'},
+  {id:20,name:'Chicken Crunchy Egg Fried Rice',cat:'Rice',price:115,badge:'br'},
+  {id:21,name:'Beef Crunchy Egg Fried Rice',cat:'Rice',price:145,badge:'br'},
 ];
 
 let sb,cart=[],screen='splash',history=['splash'];
@@ -481,7 +485,7 @@ function goBack(){
 }
 
 // MENU
-const CATS=['All','Coffee','Matcha','Fruit Tea','Food','Combo'];
+const CATS=['All','Coffee','Matcha','Fruit Tea','Food','Rice','Combo'];
 let activeCat='All';
 function buildMenu(){
   document.getElementById('cat-row').innerHTML=CATS.map(c=>`<button class="cat-btn${c===activeCat?' active':''}" onclick="setCat('${c}')">${c}</button>`).join('');
@@ -492,7 +496,7 @@ function buildMenu(){
     <div>${list.filter(i=>i.cat===cat).map(itemHtml).join('')}</div>`).join('');
   syncFab();
 }
-const catEmoji=c=>({Coffee:'☕',Matcha:'🍵','Fruit Tea':'🧋',Food:'🥖',Combo:'🔀'}[c]||'');
+const catEmoji=c=>({Coffee:'☕',Matcha:'🍵','Fruit Tea':'🧋',Food:'🥖',Rice:'🍚',Combo:'🔀'}[c]||'');
 function setCat(c){activeCat=c;buildMenu();}
 
 function itemHtml(item){
