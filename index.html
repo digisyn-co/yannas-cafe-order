@@ -241,19 +241,38 @@ html,body{height:100%;height:100dvh;background:var(--bg);color:var(--text);font-
 /* ──────────────────────────────────────────────
    THANK YOU
 ────────────────────────────────────────────── */
-#screen-thankyou{justify-content:center;align-items:center}
-.ty-wrap{padding:32px 28px;text-align:center;display:flex;flex-direction:column;align-items:center}
-.ty-logo{width:100px;height:100px;object-fit:contain;border-radius:20px;margin-bottom:24px;animation:breathe 4s ease-in-out infinite}
-.ty-check{width:64px;height:64px;border-radius:50%;background:rgba(52,199,89,0.1);border:1px solid rgba(52,199,89,0.25);display:flex;align-items:center;justify-content:center;font-size:28px;margin-bottom:18px;animation:pop .5s cubic-bezier(.34,1.56,.64,1)}
-.ty-title{font-family:'Playfair Display',serif;font-size:32px;font-weight:900;color:var(--text);line-height:1.1;margin-bottom:8px}
-.ty-title em{color:var(--gold);font-style:italic}
-.ty-sub{font-size:14px;color:var(--text3);line-height:1.7;margin-bottom:28px}
-.ty-num-wrap{background:var(--warm2);border-radius:var(--r);padding:14px 24px;border:1px solid rgba(201,164,82,0.15);margin-bottom:28px}
-.ty-num-label{font-size:11px;color:var(--text3);letter-spacing:.06em;text-transform:uppercase;margin-bottom:4px}
-.ty-num{font-family:'Playfair Display',serif;font-size:24px;font-weight:700;color:var(--gold)}
-.ty-again{width:100%;padding:17px;border-radius:var(--rx);background:var(--gold);color:#0F0A05;border:none;font-size:16px;font-weight:700;font-family:'DM Sans',sans-serif;cursor:pointer;margin-bottom:12px;transition:.15s}
+#screen-thankyou{justify-content:flex-start;overflow-y:auto}
+@keyframes fade-up{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+@keyframes gold-pulse{0%,100%{box-shadow:0 0 0 0 rgba(201,164,82,0)}50%{box-shadow:0 0 0 16px rgba(201,164,82,0)}}
+.ty-hero{background:linear-gradient(180deg,#1A1108 0%,var(--bg) 100%);padding:52px 28px 32px;text-align:center;position:relative;overflow:hidden}
+.ty-hero::before{content:'';position:absolute;top:-60px;left:50%;transform:translateX(-50%);width:240px;height:240px;border-radius:50%;background:radial-gradient(circle,rgba(201,164,82,0.08) 0%,transparent 70%);pointer-events:none}
+.ty-logo{width:72px;height:72px;object-fit:contain;border-radius:14px;margin:0 auto 20px;display:block;animation:fade-up .6s ease both}
+.ty-check{width:56px;height:56px;border-radius:50%;background:rgba(52,199,89,0.12);border:1px solid rgba(52,199,89,0.3);display:flex;align-items:center;justify-content:center;font-size:24px;margin:0 auto 20px;animation:pop .5s cubic-bezier(.34,1.56,.64,1) .2s both,gold-pulse 3s ease 1s infinite}
+.ty-headline{font-family:'Playfair Display',serif;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);opacity:.7;margin-bottom:8px;animation:fade-up .5s ease .15s both}
+.ty-name{font-family:'Playfair Display',serif;font-size:38px;font-weight:900;color:var(--text);line-height:1;margin-bottom:6px;animation:fade-up .5s ease .2s both}
+.ty-name span{color:var(--gold);font-style:italic}
+.ty-tagline{font-size:14px;color:var(--text3);line-height:1.6;animation:fade-up .5s ease .25s both}
+
+.ty-body{padding:0 22px 48px}
+.ty-note-card{background:var(--warm2);border-radius:var(--rl);border:1px solid rgba(201,164,82,0.15);padding:22px;margin-bottom:16px;animation:fade-up .5s ease .35s both;position:relative}
+.ty-note-card::before{content:'"';position:absolute;top:10px;left:18px;font-family:'Playfair Display',serif;font-size:52px;color:var(--gold);opacity:.15;line-height:1}
+.ty-note-text{font-family:'Playfair Display',serif;font-style:italic;font-size:16px;color:var(--text);line-height:1.7;margin-bottom:14px;padding-top:8px}
+.ty-note-sig{display:flex;align-items:center;gap:10px}
+.ty-note-sig-logo{width:28px;height:28px;object-fit:contain;border-radius:6px;opacity:.8}
+.ty-note-sig-text{font-size:12px;color:var(--text3)}
+.ty-note-sig-text strong{color:var(--gold);display:block;font-size:13px}
+
+.ty-order-card{background:var(--warm1);border-radius:var(--r);border:1px solid rgba(201,164,82,0.1);padding:16px;margin-bottom:20px;animation:fade-up .5s ease .4s both}
+.ty-order-label{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);opacity:.6;margin-bottom:10px}
+.ty-order-items{margin-bottom:10px}
+.ty-order-item{font-size:13px;color:var(--text2);padding:3px 0}
+.ty-order-num-row{display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--sep);padding-top:10px}
+.ty-order-num{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:var(--gold)}
+.ty-order-total{font-size:14px;font-weight:700;color:var(--text)}
+
+.ty-again{width:100%;padding:17px;border-radius:var(--rx);background:var(--gold);color:#0F0A05;border:none;font-size:16px;font-weight:700;font-family:'DM Sans',sans-serif;cursor:pointer;margin-bottom:12px;transition:.15s;animation:fade-up .5s ease .5s both;letter-spacing:.01em}
 .ty-again:active{background:var(--gold-l)}
-.ty-share{font-size:13px;color:var(--text3);cursor:pointer;padding:8px;transition:.15s}
+.ty-share{font-size:13px;color:var(--text3);cursor:pointer;padding:8px;text-align:center;display:block;transition:.15s;animation:fade-up .5s ease .55s both}
 .ty-share:active{color:var(--gold)}
 </style>
 </head>
@@ -425,14 +444,28 @@ html,body{height:100%;height:100dvh;background:var(--bg);color:var(--text);font-
 
 <!-- THANK YOU -->
 <div class="screen hidden" id="screen-thankyou">
-  <div class="ty-wrap">
+  <div class="ty-hero">
     <img src="https://raw.githubusercontent.com/digisyn-co/yannas-cafe-order/main/logo.png" class="ty-logo" alt="Yanna's">
     <div class="ty-check">✓</div>
-    <div class="ty-title">Thank<br><em>you!</em></div>
-    <div class="ty-sub" id="ty-sub">We hope you enjoyed your order.<br>See you again soon! ☕</div>
-    <div class="ty-num-wrap">
-      <div class="ty-num-label">Your Order</div>
-      <div class="ty-num" id="ty-num">#DT-0001</div>
+    <div class="ty-headline">Order Complete</div>
+    <div class="ty-name">See you soon,<br><span id="ty-firstname">Friend</span>!</div>
+    <div class="ty-tagline" id="ty-tagline">Your order is on its way.<br>We hope every sip brings you joy.</div>
+  </div>
+  <div class="ty-body">
+    <div class="ty-note-card">
+      <div class="ty-note-text" id="ty-note">Every cup we make carries a little piece of Vietnam — brewed with care, served with heart. Thank you for choosing Yanna's today.</div>
+      <div class="ty-note-sig">
+        <img src="https://raw.githubusercontent.com/digisyn-co/yannas-cafe-order/main/logo.png" class="ty-note-sig-logo" alt="">
+        <div class="ty-note-sig-text"><strong>Yanna's Vietnamese Coffee</strong>San Enrique, Iloilo</div>
+      </div>
+    </div>
+    <div class="ty-order-card" id="ty-order-card">
+      <div class="ty-order-label">What you ordered</div>
+      <div class="ty-order-items" id="ty-order-items"></div>
+      <div class="ty-order-num-row">
+        <div class="ty-order-num" id="ty-num">#DT-0001</div>
+        <div class="ty-order-total" id="ty-total">₱0</div>
+      </div>
     </div>
     <button class="ty-again" onclick="orderAgain()">Order Again →</button>
     <div class="ty-share" onclick="shareApp()">Share Yanna's with a friend ↗</div>
