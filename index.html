@@ -509,8 +509,17 @@ function setCat(c){activeCat=c;buildMenu();}
 
 function itemHtml(item){
   const star=item.star?`<span class="star">★</span>`:'';
+  if(item.addon){
+    return `<div class="addon-item" onclick="addItem(${item.id})">
+      <div class="addon-label">+ ${item.name.replace('Add-on: ','')}</div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <span class="addon-price">+₱${item.price}</span>
+        <button class="addon-add" onclick="event.stopPropagation();addItem(${item.id})">Add</button>
+      </div>
+    </div>`;
+  }
   if(item.hastemp){
-    return`<div class="menu-item">
+    return `<div class="menu-item">
       <div class="mi-row1">
         <div class="mi-name">${star}${item.name}</div>
         <span class="mi-tag ${item.badge}">${item.cat}</span>
@@ -527,22 +536,13 @@ function itemHtml(item){
       </div>
     </div>`;
   }
-  if(item.addon){
-    return\`<div class="addon-item" onclick="addItem(\${item.id})">
-      <div class="addon-label">+ \${item.name.replace('Add-on: ','')}</div>
-      <div style="display:flex;align-items:center;gap:8px">
-        <span class="addon-price">+₱\${item.price}</span>
-        <button class="addon-add" onclick="event.stopPropagation();addItem(\${item.id})">Add</button>
-      </div>
-    </div>\`;
-  }
-  return\`<div class="menu-item">
-    <div class="mi-row1"><div class="mi-name">\${star}\${item.name}</div><span class="mi-tag \${item.badge}">\${item.cat}</span></div>
+  return `<div class="menu-item">
+    <div class="mi-row1"><div class="mi-name">${star}${item.name}</div><span class="mi-tag ${item.badge}">${item.cat}</span></div>
     <div class="mi-single-row">
-      <span class="mi-single-price">₱\${item.price}</span>
-      <button class="mi-add-btn" onclick="addItem(\${item.id})"><span>+</span> Add</button>
+      <span class="mi-single-price">₱${item.price}</span>
+      <button class="mi-add-btn" onclick="addItem(${item.id})"><span>+</span> Add</button>
     </div>
-  </div>\`;
+  </div>`;
 }
 
 function addItem(id,temp){
