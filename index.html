@@ -73,7 +73,7 @@ html,body{height:100%;height:100dvh;background:var(--bg);color:var(--text);font-
 
 /* Menu items */
 .menu-section-head{display:flex;align-items:center;gap:12px;padding:22px 22px 10px}
-.msh-label{font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);opacity:.75}
+.msh-label{font-size:13px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gold)}
 .msh-line{flex:1;height:1px;background:var(--sep)}
 .menu-item{padding:14px 22px;border-bottom:1px solid var(--sep);transition:.1s;cursor:pointer}
 .menu-item:active{background:rgba(201,164,82,0.04)}
@@ -87,6 +87,11 @@ html,body{height:100%;height:100dvh;background:var(--bg);color:var(--text);font-
 .bf{background:rgba(240,232,214,0.07);color:var(--text2)}
 .bco{background:rgba(201,164,82,0.12);color:var(--gold)}
 .br{background:rgba(255,149,0,0.1);color:#FF9500}
+.addon-item{padding:8px 22px 8px 32px;border-bottom:1px solid var(--sep);display:flex;align-items:center;justify-content:space-between;cursor:pointer;transition:.1s}
+.addon-item:active{background:rgba(201,164,82,0.04)}
+.addon-label{font-size:13px;color:var(--text2)}
+.addon-price{font-size:13px;font-weight:700;color:var(--gold);margin-right:10px}
+.addon-add{font-size:12px;font-weight:600;color:var(--gold);background:rgba(201,164,82,0.1);border:1px solid rgba(201,164,82,0.2);border-radius:20px;padding:5px 12px;cursor:pointer;font-family:"DM Sans",sans-serif}
 .bm{background:rgba(52,199,89,0.1);color:#30D158}
 .mi-options{display:flex;gap:8px}
 .mi-opt{flex:1;display:flex;align-items:center;justify-content:space-between;background:var(--warm2);border-radius:10px;padding:9px 12px;border:1px solid var(--sep);cursor:pointer;transition:.15s;gap:6px}
@@ -462,6 +467,9 @@ const MENU=[
   {id:19,name:'Pork Crunchy Egg Fried Rice',cat:'Rice',price:130,badge:'br'},
   {id:20,name:'Chicken Crunchy Egg Fried Rice',cat:'Rice',price:115,badge:'br'},
   {id:21,name:'Beef Crunchy Egg Fried Rice',cat:'Rice',price:145,badge:'br'},
+  {id:22,name:'Add-on: Bacon',  cat:'Rice',price:55,badge:'br',addon:true},
+  {id:23,name:'Add-on: Tocino', cat:'Rice',price:55,badge:'br',addon:true},
+  {id:24,name:'Add-on: Tapa',   cat:'Rice',price:65,badge:'br',addon:true},
 ];
 
 let sb,cart=[],screen='splash',history=['splash'];
@@ -519,13 +527,22 @@ function itemHtml(item){
       </div>
     </div>`;
   }
-  return`<div class="menu-item">
-    <div class="mi-row1"><div class="mi-name">${star}${item.name}</div><span class="mi-tag ${item.badge}">${item.cat}</span></div>
+  if(item.addon){
+    return\`<div class="addon-item" onclick="addItem(\${item.id})">
+      <div class="addon-label">+ \${item.name.replace('Add-on: ','')}</div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <span class="addon-price">+₱\${item.price}</span>
+        <button class="addon-add" onclick="event.stopPropagation();addItem(\${item.id})">Add</button>
+      </div>
+    </div>\`;
+  }
+  return\`<div class="menu-item">
+    <div class="mi-row1"><div class="mi-name">\${star}\${item.name}</div><span class="mi-tag \${item.badge}">\${item.cat}</span></div>
     <div class="mi-single-row">
-      <span class="mi-single-price">₱${item.price}</span>
-      <button class="mi-add-btn" onclick="addItem(${item.id})"><span>+</span> Add</button>
+      <span class="mi-single-price">₱\${item.price}</span>
+      <button class="mi-add-btn" onclick="addItem(\${item.id})"><span>+</span> Add</button>
     </div>
-  </div>`;
+  </div>\`;
 }
 
 function addItem(id,temp){
