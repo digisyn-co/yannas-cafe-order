@@ -472,7 +472,7 @@ const MENU=[
   {id:24,name:'Add-on: Tapa',   cat:'Rice',price:65,badge:'br',addon:true},
 ];
 
-let sb,cart=[],screen='splash',history=['splash'];
+let sb,cart=[],screen='splash',navStack=['splash'];
 let pay='GCash',eta=null,orderInterval=null,orderData=null;
 
 window.onload=()=>{sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);buildMenu();}
@@ -481,12 +481,12 @@ window.onload=()=>{sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);buildMenu
 function goTo(s){
   document.getElementById('screen-'+screen).classList.add(screen==='splash'?'hidden':'slide-left');
   document.getElementById('screen-'+s).classList.remove('hidden','slide-left');
-  history.push(s);screen=s;
+  navStack.push(s);screen=s;
   if(s==='cart')buildCart();
   if(s==='details')checkDetails();
 }
 function goBack(){
-  history.pop();const prev=history[history.length-1]||'splash';
+  navStack.pop();const prev=navStack[navStack.length-1]||'splash';
   document.getElementById('screen-'+screen).classList.add('hidden');
   document.getElementById('screen-'+prev).classList.remove('hidden','slide-left');
   screen=prev;
@@ -689,7 +689,7 @@ async function doPlaceOrder(){
   if(error||!data){goBack();toast('Failed: '+(error?.message||'try again'));console.error(error);return;}
   cart=[];syncFab();orderData=data;
   listenOrder(data);drawStatus(data);
-  goTo('status');history=['splash','status'];
+  goTo('status');navStack=['splash','status'];
 }
 
 // STATUS
@@ -766,7 +766,7 @@ async function markReceived(){
   const name=orderData.customer_name?.split(' ')[0]||'';
   document.getElementById('ty-num').textContent=orderData.order_number;
   document.getElementById('ty-sub').textContent=`We hope you loved it${name?', '+name:''}.\nSee you next time! ☕`;
-  goTo('thankyou');history=['splash','thankyou'];
+  goTo('thankyou');navStack=['splash','thankyou'];
 }
 
 // THANK YOU
@@ -775,7 +775,7 @@ function orderAgain(){
   ['fname','lname','phone'].forEach(id=>document.getElementById(id).value='');
   ['gcash','maya','card'].forEach(k=>document.getElementById('pay-'+k).classList.toggle('on',k==='gcash'));
   document.querySelectorAll('.eta-tile').forEach(el=>el.classList.remove('on'));
-  history=['splash'];screen='thankyou';goTo('menu');
+  navStack=['splash'];screen='thankyou';goTo('menu');
 }
 function shareApp(){
   if(navigator.share){navigator.share({title:"Yanna's Vietnamese Coffee",text:'Order drive-thru ahead!',url:window.location.origin});}
