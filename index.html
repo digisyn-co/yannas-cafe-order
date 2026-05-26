@@ -204,6 +204,47 @@ html,body{height:100%;height:100dvh;background:var(--creme);color:var(--brown);f
 /* TOAST */
 .toast{position:fixed;bottom:100px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--brown);color:var(--creme);padding:12px 20px;border-radius:var(--rx);font-size:13px;font-weight:500;opacity:0;transition:.3s;pointer-events:none;white-space:nowrap;z-index:999}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* PAYMENT SCREEN */
+.pay-screen-amount{background:var(--brown);padding:28px 20px;text-align:center;flex-shrink:0}
+.psa-label{font-size:12px;letter-spacing:.08em;color:rgba(250,247,242,0.5);margin-bottom:6px}
+.psa-amount{font-family:'Playfair Display',serif;font-size:42px;font-weight:700;color:var(--creme);line-height:1}
+.psa-method{font-size:13px;color:rgba(250,247,242,0.6);margin-top:6px}
+.pay-body{padding:20px}
+
+/* GCash / Maya panel */
+.ewallet-panel{background:var(--white);border-radius:var(--rl);border:1.5px solid var(--creme2);overflow:hidden;margin-bottom:16px}
+.ewallet-header{padding:16px 18px 12px;border-bottom:1.5px solid var(--creme2);display:flex;align-items:center;gap:12px}
+.ewallet-logo{width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.ewallet-logo.gcash{background:#007DFF}
+.ewallet-logo.maya{background:#00AA6C}
+.ewallet-name{font-size:16px;font-weight:700;color:var(--brown)}
+.ewallet-sub{font-size:12px;color:var(--brown3)}
+.qr-wrap{padding:20px;text-align:center}
+.qr-box{width:160px;height:160px;margin:0 auto 14px;border:2px solid var(--creme3);border-radius:12px;display:flex;align-items:center;justify-content:center;position:relative;background:var(--white)}
+.qr-placeholder{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;width:112px;height:112px}
+.qr-cell{border-radius:1px}
+.ewallet-number{font-size:15px;font-weight:700;color:var(--brown);letter-spacing:.04em}
+.ewallet-number-label{font-size:11px;color:var(--brown3);margin-bottom:4px}
+.ewallet-note{font-size:12px;color:var(--brown3);line-height:1.5;padding:0 18px 16px;text-align:center}
+.pay-confirm-btn{width:100%;padding:14px;border-radius:var(--r);background:var(--green-l);border:1.5px solid #6ECA98;color:var(--green);font-weight:700;font-size:14px;cursor:pointer;font-family:'DM Sans',sans-serif;margin:0 18px 18px;width:calc(100% - 36px);display:block}
+.pay-confirm-btn:active{background:#C0EDD4}
+
+/* Card panel */
+.card-panel{background:var(--white);border-radius:var(--rl);border:1.5px solid var(--creme2);overflow:hidden;margin-bottom:16px}
+.card-visual{background:linear-gradient(135deg,#2C1A0E 0%,#5C3D2E 100%);padding:22px 20px 18px;position:relative;overflow:hidden}
+.card-visual::before{content:'';position:absolute;top:-20px;right:-20px;width:120px;height:120px;border-radius:50%;background:rgba(255,255,255,0.04)}
+.card-visual::after{content:'';position:absolute;bottom:-30px;left:20px;width:100px;height:100px;border-radius:50%;background:rgba(255,255,255,0.03)}
+.card-chip-icon{width:32px;height:24px;background:linear-gradient(135deg,#C47D2E,#E8A84E);border-radius:4px;margin-bottom:16px}
+.card-num-display{font-size:17px;letter-spacing:.14em;color:rgba(255,255,255,0.9);margin-bottom:14px;font-family:monospace}
+.card-meta{display:flex;justify-content:space-between}
+.card-meta-item label{font-size:9px;letter-spacing:.08em;color:rgba(255,255,255,0.4);display:block;margin-bottom:2px}
+.card-meta-item span{font-size:13px;color:rgba(255,255,255,0.85);font-family:monospace;letter-spacing:.06em}
+.card-form{padding:16px 18px}
+.cf-label{font-size:11px;font-weight:600;color:var(--brown3);letter-spacing:.04em;margin-bottom:5px;display:block}
+.cf-input{width:100%;padding:12px 14px;border-radius:var(--r);border:1.5px solid var(--creme3);background:var(--creme);font-size:15px;font-family:'DM Sans',sans-serif;color:var(--brown);outline:none;transition:border-color .2s;margin-bottom:14px}
+.cf-input:focus{border-color:var(--brown2);background:var(--white)}
+.cf-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 </style>
 </head>
 <body>
@@ -283,12 +324,15 @@ html,body{height:100%;height:100dvh;background:var(--creme);color:var(--brown);f
         <div class="field-label">PHONE NUMBER <span style="color:var(--red)">*</span></div>
         <input class="field-input" id="customer-phone" placeholder="09XX XXX XXXX" maxlength="13" type="tel" inputmode="numeric" oninput="validateDetails()">
         <div class="field-label">PAYMENT METHOD</div>
-        <div class="pay-opts">
+        <div class="pay-opts" style="grid-template-columns:1fr 1fr 1fr">
           <div class="pay-opt selected" id="pay-gcash" onclick="selectPay('GCash')">
             <div class="po-icon">📱</div><div class="po-name">GCash</div>
           </div>
           <div class="pay-opt" id="pay-maya" onclick="selectPay('Maya')">
-            <div class="po-icon">💳</div><div class="po-name">Maya</div>
+            <div class="po-icon">💚</div><div class="po-name">Maya</div>
+          </div>
+          <div class="pay-opt" id="pay-card" onclick="selectPay('Card')">
+            <div class="po-icon">💳</div><div class="po-name">Card</div>
           </div>
         </div>
         <div style="background:var(--amber-l);border-radius:var(--r);padding:13px 16px;border:1.5px solid #FBBF8A;font-size:13px;color:#854F0B;line-height:1.5">
@@ -326,10 +370,214 @@ html,body{height:100%;height:100dvh;background:var(--creme);color:var(--brown);f
       </div>
     </div>
     <div class="cta-wrap">
-      <button class="cta-btn green" id="eta-cta" onclick="placeOrder()" disabled>Place Order →</button>
+      <button class="cta-btn green" id="eta-cta" onclick="goToPayment()" disabled>Continue to Payment →</button>
     </div>
   </div>
 
+
+  <!-- PAYMENT -->
+  <div class="screen hidden" id="screen-payment">
+    <div class="topbar">
+      <button class="back-btn" onclick="goBack()">←</button>
+      <div class="topbar-title">Payment</div>
+    </div>
+    <div class="pay-screen-amount">
+      <div class="psa-label">AMOUNT TO PAY</div>
+      <div class="psa-amount" id="pay-amount-display">₱0</div>
+      <div class="psa-method" id="pay-method-display">via GCash</div>
+    </div>
+    <div class="screen-body">
+      <div class="pay-body">
+        <!-- GCash Panel -->
+        <div id="panel-gcash" class="ewallet-panel">
+          <div class="ewallet-header">
+            <div class="ewallet-logo gcash">💙</div>
+            <div><div class="ewallet-name">GCash</div><div class="ewallet-sub">Send payment to this number</div></div>
+          </div>
+          <div class="qr-wrap">
+            <div class="qr-box" id="qr-gcash">
+              <svg width="120" height="120" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+                <rect x="4" y="4" width="34" height="34" rx="2" fill="none" stroke="#2C1A0E" stroke-width="3"/>
+                <rect x="11" y="11" width="20" height="20" rx="1" fill="#2C1A0E"/>
+                <rect x="82" y="4" width="34" height="34" rx="2" fill="none" stroke="#2C1A0E" stroke-width="3"/>
+                <rect x="89" y="11" width="20" height="20" rx="1" fill="#2C1A0E"/>
+                <rect x="4" y="82" width="34" height="34" rx="2" fill="none" stroke="#2C1A0E" stroke-width="3"/>
+                <rect x="11" y="89" width="20" height="20" rx="1" fill="#2C1A0E"/>
+                <rect x="44" y="4" width="6" height="6" fill="#2C1A0E" rx="1"/>
+                <rect x="52" y="4" width="6" height="6" fill="#2C1A0E" rx="1"/>
+                <rect x="60" y="4" width="6" height="6" fill="#2C1A0E" rx="1"/>
+                <rect x="68" y="4" width="6" height="6" fill="#2C1A0E" rx="1"/>
+                <rect x="44" y="12" width="6" height="6" fill="#2C1A0E" rx="1"/>
+                <rect x="60" y="12" width="6" height="6" fill="#2C1A0E" rx="1"/>
+                <rect x="44" y="20" width="6" height="6" fill="#2C1A0E" rx="1"/>
+                <rect x="52" y="20" width="6" height="6" fill="#2C1A0E" rx="1"/>
+                <rect x="68" y="20" width="6" height="6" fill="#2C1A0E" rx="1"/>
+                <rect x="44" y="28" width="6" height="6" fill="#2C1A0E" rx="1"/>
+                <rect x="60" y="28" width="6" height="6" fill="#2C1A0E" rx="1"/>
+                <rect x="68" y="28" width="6" height="6" fill="#2C1A0E" rx="1"/>
+                <rect x="4" y="44" width="6" height="6" fill="#2C1A0E" rx="1"/>
+                <rect x="20" y="44" width="6" height="6" fill="#2C1A0E" rx="1"/>
+                <rect x="28" y="44" width="6" height="6" fill="#2C1A0E" rx="1"/>
+                <rect x="44" y="44" width="6" height="6" fill="#2C1A0E" rx="1"/>
+                <rect x="52" y="44" width="6" height="6" fill="#2C1A0E" rx="1"/>
+                <rect x="68" y="44" width="6" height="6" fill="#2C1A0E" rx="1"/>
+                <rect x="84" y="44" width="6" height="6" fill="#2C1A0E" rx="1"/>
+                <rect x="100" y="44" width="6" height="6" fill="#2C1A0E" rx="1"/>
+                <rect x="108" y="44" width="6" height="6" fill="#2C1A0E" rx="1"/>
+                <rect x="4" y="52" width="6" height="6" fill="#2C1A0E" rx="1"/>
+                <rect x="12" y="52" width="6" height="6" fill="#2C1A0E" rx="1"/>
+                <rect x="28" y="52" width="6" height="6" fill="#2C1A0E" rx="1"/>
+                <rect x="44" y="52" width="6" height="6" fill="#2C1A0E" rx="1"/>
+                <rect x="60" y="52" width="6" height="6" fill="#2C1A0E" rx="1"/>
+                <rect x="76" y="52" width="6" height="6" fill="#2C1A0E" rx="1"/>
+                <rect x="92" y="52" width="6" height="6" fill="#2C1A0E" rx="1"/>
+                <rect x="108" y="52" width="6" height="6" fill="#2C1A0E" rx="1"/>
+                <rect x="4" y="60" width="6" height="6" fill="#2C1A0E" rx="1"/>
+                <rect x="20" y="60" width="6" height="6" fill="#2C1A0E" rx="1"/>
+                <rect x="36" y="60" width="6" height="6" fill="#2C1A0E" rx="1"/>
+                <rect x="52" y="60" width="6" height="6" fill="#2C1A0E" rx="1"/>
+                <rect x="68" y="60" width="6" height="6" fill="#2C1A0E" rx="1"/>
+                <rect x="84" y="60" width="6" height="6" fill="#2C1A0E" rx="1"/>
+                <rect x="100" y="60" width="6" height="6" fill="#2C1A0E" rx="1"/>
+                <rect x="4" y="68" width="6" height="6" fill="#2C1A0E" rx="1"/>
+                <rect x="12" y="68" width="6" height="6" fill="#2C1A0E" rx="1"/>
+                <rect x="36" y="68" width="6" height="6" fill="#2C1A0E" rx="1"/>
+                <rect x="60" y="68" width="6" height="6" fill="#2C1A0E" rx="1"/>
+                <rect x="76" y="68" width="6" height="6" fill="#2C1A0E" rx="1"/>
+                <rect x="92" y="68" width="6" height="6" fill="#2C1A0E" rx="1"/>
+                <rect x="108" y="68" width="6" height="6" fill="#2C1A0E" rx="1"/>
+                <rect x="44" y="76" width="6" height="6" fill="#2C1A0E" rx="1"/>
+                <rect x="60" y="76" width="6" height="6" fill="#2C1A0E" rx="1"/>
+                <rect x="76" y="76" width="6" height="6" fill="#2C1A0E" rx="1"/>
+                <rect x="44" y="84" width="6" height="6" fill="#2C1A0E" rx="1"/>
+                <rect x="52" y="84" width="6" height="6" fill="#2C1A0E" rx="1"/>
+                <rect x="68" y="84" width="6" height="6" fill="#2C1A0E" rx="1"/>
+                <rect x="84" y="84" width="6" height="6" fill="#2C1A0E" rx="1"/>
+                <rect x="108" y="84" width="6" height="6" fill="#2C1A0E" rx="1"/>
+                <rect x="44" y="92" width="6" height="6" fill="#2C1A0E" rx="1"/>
+                <rect x="60" y="92" width="6" height="6" fill="#2C1A0E" rx="1"/>
+                <rect x="76" y="92" width="6" height="6" fill="#2C1A0E" rx="1"/>
+                <rect x="92" y="92" width="6" height="6" fill="#2C1A0E" rx="1"/>
+                <rect x="44" y="100" width="6" height="6" fill="#2C1A0E" rx="1"/>
+                <rect x="52" y="100" width="6" height="6" fill="#2C1A0E" rx="1"/>
+                <rect x="68" y="100" width="6" height="6" fill="#2C1A0E" rx="1"/>
+                <rect x="100" y="100" width="6" height="6" fill="#2C1A0E" rx="1"/>
+                <rect x="44" y="108" width="6" height="6" fill="#2C1A0E" rx="1"/>
+                <rect x="68" y="108" width="6" height="6" fill="#2C1A0E" rx="1"/>
+                <rect x="84" y="108" width="6" height="6" fill="#2C1A0E" rx="1"/>
+                <rect x="100" y="108" width="6" height="6" fill="#2C1A0E" rx="1"/>
+                <rect x="108" y="108" width="6" height="6" fill="#2C1A0E" rx="1"/>
+              </svg>
+            </div>
+            <div class="ewallet-number-label">GCash Number</div>
+            <div class="ewallet-number" id="gcash-number">0917 XXX XXXX</div>
+          </div>
+          <div class="ewallet-note">Send the exact amount above then tap the button below. Screenshot your GCash receipt as proof of payment.</div>
+          <button class="pay-confirm-btn" onclick="confirmEwalletPay()">✅ I've Sent the Payment</button>
+        </div>
+
+        <!-- Maya Panel -->
+        <div id="panel-maya" class="ewallet-panel" style="display:none">
+          <div class="ewallet-header">
+            <div class="ewallet-logo maya">💚</div>
+            <div><div class="ewallet-name">Maya</div><div class="ewallet-sub">Send payment to this number</div></div>
+          </div>
+          <div class="qr-wrap">
+            <div class="qr-box">
+              <svg width="120" height="120" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+                <rect x="4" y="4" width="34" height="34" rx="2" fill="none" stroke="#2C1A0E" stroke-width="3"/>
+                <rect x="11" y="11" width="20" height="20" rx="1" fill="#2C1A0E"/>
+                <rect x="82" y="4" width="34" height="34" rx="2" fill="none" stroke="#2C1A0E" stroke-width="3"/>
+                <rect x="89" y="11" width="20" height="20" rx="1" fill="#2C1A0E"/>
+                <rect x="4" y="82" width="34" height="34" rx="2" fill="none" stroke="#2C1A0E" stroke-width="3"/>
+                <rect x="11" y="89" width="20" height="20" rx="1" fill="#2C1A0E"/>
+                <rect x="52" y="4" width="6" height="6" fill="#2C1A0E" rx="1"/>
+                <rect x="60" y="4" width="6" height="6" fill="#2C1A0E" rx="1"/>
+                <rect x="44" y="12" width="6" height="6" fill="#2C1A0E" rx="1"/>
+                <rect x="68" y="12" width="6" height="6" fill="#2C1A0E" rx="1"/>
+                <rect x="52" y="20" width="6" height="6" fill="#2C1A0E" rx="1"/>
+                <rect x="60" y="20" width="6" height="6" fill="#2C1A0E" rx="1"/>
+                <rect x="44" y="28" width="6" height="6" fill="#2C1A0E" rx="1"/>
+                <rect x="52" y="28" width="6" height="6" fill="#2C1A0E" rx="1"/>
+                <rect x="60" y="28" width="6" height="6" fill="#2C1A0E" rx="1"/>
+                <rect x="68" y="28" width="6" height="6" fill="#2C1A0E" rx="1"/>
+                <rect x="12" y="44" width="6" height="6" fill="#2C1A0E" rx="1"/>
+                <rect x="28" y="44" width="6" height="6" fill="#2C1A0E" rx="1"/>
+                <rect x="44" y="44" width="6" height="6" fill="#2C1A0E" rx="1"/>
+                <rect x="60" y="44" width="6" height="6" fill="#2C1A0E" rx="1"/>
+                <rect x="76" y="44" width="6" height="6" fill="#2C1A0E" rx="1"/>
+                <rect x="100" y="44" width="6" height="6" fill="#2C1A0E" rx="1"/>
+                <rect x="4" y="52" width="6" height="6" fill="#2C1A0E" rx="1"/>
+                <rect x="20" y="52" width="6" height="6" fill="#2C1A0E" rx="1"/>
+                <rect x="44" y="52" width="6" height="6" fill="#2C1A0E" rx="1"/>
+                <rect x="68" y="52" width="6" height="6" fill="#2C1A0E" rx="1"/>
+                <rect x="84" y="52" width="6" height="6" fill="#2C1A0E" rx="1"/>
+                <rect x="108" y="52" width="6" height="6" fill="#2C1A0E" rx="1"/>
+                <rect x="4" y="60" width="6" height="6" fill="#2C1A0E" rx="1"/>
+                <rect x="28" y="60" width="6" height="6" fill="#2C1A0E" rx="1"/>
+                <rect x="52" y="60" width="6" height="6" fill="#2C1A0E" rx="1"/>
+                <rect x="76" y="60" width="6" height="6" fill="#2C1A0E" rx="1"/>
+                <rect x="100" y="60" width="6" height="6" fill="#2C1A0E" rx="1"/>
+                <rect x="44" y="76" width="6" height="6" fill="#2C1A0E" rx="1"/>
+                <rect x="60" y="76" width="6" height="6" fill="#2C1A0E" rx="1"/>
+                <rect x="84" y="76" width="6" height="6" fill="#2C1A0E" rx="1"/>
+                <rect x="52" y="84" width="6" height="6" fill="#2C1A0E" rx="1"/>
+                <rect x="76" y="84" width="6" height="6" fill="#2C1A0E" rx="1"/>
+                <rect x="100" y="84" width="6" height="6" fill="#2C1A0E" rx="1"/>
+                <rect x="44" y="92" width="6" height="6" fill="#2C1A0E" rx="1"/>
+                <rect x="68" y="92" width="6" height="6" fill="#2C1A0E" rx="1"/>
+                <rect x="92" y="92" width="6" height="6" fill="#2C1A0E" rx="1"/>
+                <rect x="44" y="100" width="6" height="6" fill="#2C1A0E" rx="1"/>
+                <rect x="60" y="100" width="6" height="6" fill="#2C1A0E" rx="1"/>
+                <rect x="84" y="100" width="6" height="6" fill="#2C1A0E" rx="1"/>
+                <rect x="108" y="100" width="6" height="6" fill="#2C1A0E" rx="1"/>
+                <rect x="52" y="108" width="6" height="6" fill="#2C1A0E" rx="1"/>
+                <rect x="76" y="108" width="6" height="6" fill="#2C1A0E" rx="1"/>
+                <rect x="100" y="108" width="6" height="6" fill="#2C1A0E" rx="1"/>
+              </svg>
+            </div>
+            <div class="ewallet-number-label">Maya Number</div>
+            <div class="ewallet-number" id="maya-number">0917 XXX XXXX</div>
+          </div>
+          <div class="ewallet-note">Send the exact amount above then tap the button below. Screenshot your Maya receipt as proof of payment.</div>
+          <button class="pay-confirm-btn" onclick="confirmEwalletPay()">✅ I've Sent the Payment</button>
+        </div>
+
+        <!-- Card Panel -->
+        <div id="panel-card" class="card-panel" style="display:none">
+          <div class="card-visual">
+            <div class="card-chip-icon"></div>
+            <div class="card-num-display" id="card-num-display">•••• •••• •••• ••••</div>
+            <div class="card-meta">
+              <div class="card-meta-item"><label>CARD HOLDER</label><span id="card-name-display">YOUR NAME</span></div>
+              <div class="card-meta-item" style="text-align:right"><label>EXPIRES</label><span id="card-exp-display">MM/YY</span></div>
+            </div>
+          </div>
+          <div class="card-form">
+            <label class="cf-label">CARD NUMBER</label>
+            <input class="cf-input" id="card-number" placeholder="0000 0000 0000 0000" maxlength="19" inputmode="numeric" oninput="fmtCard(this)" onchange="updateCardDisplay()">
+            <label class="cf-label">CARDHOLDER NAME</label>
+            <input class="cf-input" id="card-name" placeholder="Name on card" maxlength="30" oninput="updateCardDisplay()" onchange="validateCard()">
+            <div class="cf-row">
+              <div>
+                <label class="cf-label">EXPIRY DATE</label>
+                <input class="cf-input" id="card-exp" placeholder="MM/YY" maxlength="5" inputmode="numeric" oninput="fmtExp(this)" onchange="validateCard()">
+              </div>
+              <div>
+                <label class="cf-label">CVV</label>
+                <input class="cf-input" id="card-cvv" placeholder="•••" maxlength="4" inputmode="numeric" type="password" oninput="validateCard()">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="height:8px"></div>
+      </div>
+    </div>
+    <div class="cta-wrap" id="card-cta-wrap" style="display:none">
+      <button class="cta-btn green" id="card-pay-btn" onclick="confirmCardPay()" disabled>Pay <span id="card-pay-amount">₱0</span> →</button>
+    </div>
+  </div>
   <!-- PROCESSING -->
   <div class="screen hidden" id="screen-processing">
     <div class="proc-content">
@@ -411,6 +659,7 @@ function goTo(screen){
   currentScreen=screen;
   if(screen==='cart') renderCart();
   if(screen==='details') validateDetails();
+  if(screen==='payment') {};
 }
 function goBack(){
   screenStack.pop();
@@ -535,6 +784,7 @@ function selectPay(method){
   selectedPay=method;
   document.getElementById('pay-gcash').classList.toggle('selected',method==='GCash');
   document.getElementById('pay-maya').classList.toggle('selected',method==='Maya');
+  document.getElementById('pay-card').classList.toggle('selected',method==='Card');
 }
 function validateDetails(){
   const fname=document.getElementById('customer-fname').value.trim();
