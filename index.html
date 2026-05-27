@@ -671,11 +671,28 @@ function detectGPS(){
   const sub=document.getElementById('gps-sub');
   if(!navigator.geolocation){toast('GPS not available');return;}
   icon.textContent='⏳';label.textContent='Detecting…';
-  navigator.geolocation.getCurrentPosition(pos=>{
-    const d=haversine(pos.coords.latitude,pos.coords.longitude,CAFE_LAT,CAFE_LNG);
-    const m=Math.min(Math.max(3,Math.round(d/0.5)),30);
-    pickEta(m);icon.textContent='✅';label.textContent=`${d.toFixed(1)} km away`;sub.textContent=`About ${m} min drive`;
-    toast('Location detected — '+m+' min away');
+  navigator.geolocation.getCurrentPosition(async pos=>{
+    const lat=pos.coords.latitude, lng=pos.coords.longitude;
+    // Straight-line fallback, used if the Maps API is unavailable/unconfigured
+    const d=haversine(lat,lng,CAFE_LAT,CAFE_LNG);
+    let mins=Math.min(Math.max(3,Math.round(d/0.5)),30);
+    let labelTxt=d.toFixed(1)+' km away';
+    let subTxt='About '+mins+' min drive (estimate)';
+    try{
+      const res=await fetch('/api/drive-time',{
+        method:'POST',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({origin_lat:lat,origin_lng:lng,dest_lat:CAFE_LAT,dest_lng:CAFE_LNG})
+      });
+      const out=res.ok?await res.json():null;
+      if(out&&out.minutes){
+        mins=Math.min(Math.max(1,out.minutes),60);
+        if(out.km!=null) labelTxt=out.km+' km away';
+        subTxt=out.text+' by car';
+      }
+    }catch(e){/* keep the straight-line estimate */}
+    pickEta(mins);
+    icon.textContent='✅';label.textContent=labelTxt;sub.textContent=subTxt;
+    toast('Location detected — '+mins+' min away');
   },()=>{icon.textContent='📍';label.textContent='Use my current location';sub.textContent='Auto-detect drive time';toast('Could not get location');},{timeout:8000});
 }
 function haversine(a,b,c,d){
