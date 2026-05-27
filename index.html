@@ -900,9 +900,14 @@ async function markReceived(){
 function showThankYou(){
   if(screen==='thankyou') return;
   if(orderInterval){clearInterval(orderInterval);orderInterval=null;}
-  const name=orderData?.customer_name?.split(' ')[0]||'';
-  if(orderData) document.getElementById('ty-num').textContent=orderData.order_number;
-  document.getElementById('ty-sub').textContent=`We hope you loved it${name?', '+name:''}.\nSee you next time! ☕`;
+  const o=orderData||{};
+  const name=(o.customer_name||'').split(' ')[0]||'Friend';
+  const set=(id,val)=>{const el=document.getElementById(id);if(el)el.textContent=val;};
+  set('ty-firstname',name);
+  set('ty-num',o.order_number||'');
+  set('ty-total','₱'+(o.total||0).toLocaleString());
+  const items=document.getElementById('ty-order-items');
+  if(items) items.innerHTML=(o.items||[]).map(i=>`<div>${i.qty}× ${i.name}${i.temp?' ('+i.temp+')':''}</div>`).join('');
   goTo('thankyou');navStack=['splash','thankyou'];
 }
 
