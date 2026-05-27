@@ -370,7 +370,7 @@ html,body{height:100%;height:100dvh;background:var(--bg);color:var(--text);font-
           <div class="pay-icon">💳</div><div class="pay-name">Card</div>
         </div>
       </div>
-      <div class="note-box">💡 <strong>Payment at the window</strong> — show your order and pay via your selected method when you arrive. Your order is timed to be freshly prepared.</div>
+      <div class="note-box">💡 <strong>Pay securely online</strong> — you'll be redirected to complete payment before your order is sent to the kitchen. Your order is timed to be freshly prepared.</div>
     </div>
   </div>
   <div class="cta-wrap">
@@ -510,7 +510,7 @@ const MENU=[
 let sb,cart=[],screen='splash',navStack=['splash'];
 let pay='GCash',eta=null,orderInterval=null,orderData=null;
 
-window.onload=()=>{sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);buildMenu();}
+window.onload=()=>{sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);buildMenu();handlePaymentReturn();}
 
 // NAV
 function goTo(s){
@@ -709,31 +709,110 @@ function openConfirm(){
       ${items}
       <div style="display:flex;justify-content:space-between;padding-top:12px;font-size:18px;font-weight:700;color:#F0E8D6"><span>Total</span><span style="color:#C9A452">₱${total.toLocaleString()}</span></div>
     </div>
-    <div style="background:rgba(201,164,82,0.05);border-radius:12px;padding:12px 16px;border:1px solid rgba(201,164,82,0.12);font-size:12px;color:rgba(240,232,214,0.45);line-height:1.65;margin-bottom:22px">💳 Payment via <strong style="color:#C9A452">${pay}</strong> collected at the window on arrival.</div>
-    <button onclick="document.getElementById('confirm-modal').remove();doPlaceOrder()" style="width:100%;padding:17px;border-radius:60px;background:#C9A452;color:#0F0A05;border:none;font-size:16px;font-weight:700;font-family:'DM Sans',sans-serif;cursor:pointer;margin-bottom:10px;letter-spacing:.01em">✓ Place Order</button>
+    <div style="background:rgba(201,164,82,0.05);border-radius:12px;padding:12px 16px;border:1px solid rgba(201,164,82,0.12);font-size:12px;color:rgba(240,232,214,0.45);line-height:1.65;margin-bottom:22px">💳 You'll be redirected to pay securely via <strong style="color:#C9A452">${pay}</strong>. Your order is sent to the kitchen only after payment is confirmed.</div>
+    <button onclick="document.getElementById('confirm-modal').remove();doPlaceOrder()" style="width:100%;padding:17px;border-radius:60px;background:#C9A452;color:#0F0A05;border:none;font-size:16px;font-weight:700;font-family:'DM Sans',sans-serif;cursor:pointer;margin-bottom:10px;letter-spacing:.01em">💳 Proceed to Payment →</button>
     <button onclick="document.getElementById('confirm-modal').remove()" style="width:100%;padding:14px;border-radius:60px;background:transparent;color:rgba(240,232,214,0.35);border:1px solid rgba(240,232,214,0.08);font-size:14px;font-family:'DM Sans',sans-serif;cursor:pointer">Go Back</button>
   </div>`;
   document.body.appendChild(m);
 }
 
 // PLACE ORDER
+const PM_TYPES={GCash:'gcash',Maya:'paymaya',Card:'card'};
+const PM_LABELS={gcash:'GCash',paymaya:'Maya',card:'Card'};
+const PENDING_KEY='yannas_pending_order';
+
 async function doPlaceOrder(){
   const f=document.getElementById('fname').value.trim();
   const l=document.getElementById('lname').value.trim();
   const p=document.getElementById('phone').value.trim();
+  if(!f||!l||!p||!eta||!cart.length){toast('Please complete your order details');return;}
   goTo('processing');
+  document.getElementById('proc-title').textContent='Starting secure checkout…';
+  document.getElementById('proc-sub').textContent='Redirecting you to pay';
   const total=cart.reduce((s,i)=>s+i.price*i.qty,0);
   const today=new Date();
   const{data:prev}=await sb.from('drive_thru_orders').select('id').gte('created_at',today.toISOString().split('T')[0]+'T00:00:00');
   const num=(prev?.length||0)+1;
   const orderNum='#DT-'+String(num).padStart(4,'0');
-  const arrival=new Date(Date.now()+eta*60000).toISOString();
+  const items=cart.map(i=>({id:i.id,name:i.name,qty:i.qty,price:i.price,cat:i.cat,temp:i.temp||null}));
+  const base=location.origin+location.pathname;
+  try{
+    const res=await fetch('/api/create-checkout',{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        items,total,order_number:orderNum,
+        customer_name:f+' '+l,customer_phone:p,
+        payment_method_types:[PM_TYPES[pay]||'gcash'],
+        success_url:base+'?pmreturn=success',
+        cancel_url:base+'?pmreturn=cancel'
+      })
+    });
+    const out=await res.json();
+    if(!res.ok||!out.checkout_url) throw new Error(out.error||'Could not start payment');
+    // Stash the order so we can create it once payment is confirmed on return
+    localStorage.setItem(PENDING_KEY,JSON.stringify({
+      session_id:out.session_id,order_number:orderNum,
+      fname:f,lname:l,phone:p,items,total,eta,pay,
+      arrival:new Date(Date.now()+eta*60000).toISOString()
+    }));
+    window.location.href=out.checkout_url;
+  }catch(err){
+    console.error(err);
+    goBack();
+    toast(err.message||'Payment could not start — try again');
+  }
+}
+
+// Returns from PayMongo land back here (?pmreturn=success|cancel)
+async function handlePaymentReturn(){
+  const ret=new URLSearchParams(location.search).get('pmreturn');
+  if(!ret) return;
+  const raw=localStorage.getItem(PENDING_KEY);
+  const pending=raw?JSON.parse(raw):null;
+  // Always clean the URL so a refresh can't re-trigger this
+  history.replaceState({},document.title,location.origin+location.pathname);
+  if(ret==='cancel'||!pending){
+    if(pending){cart=pending.items;syncFab();}
+    localStorage.removeItem(PENDING_KEY);
+    if(cart.length) goTo('menu');
+    toast(ret==='cancel'?'Payment cancelled — you were not charged':'Session expired — please try again');
+    return;
+  }
+  // success — verify with the server before trusting it
+  goTo('processing');
+  document.getElementById('proc-title').textContent='Verifying payment…';
+  document.getElementById('proc-sub').textContent='Just a moment';
+  try{
+    const res=await fetch('/api/verify-payment',{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({session_id:pending.session_id})
+    });
+    const out=await res.json();
+    if(!out.success) throw new Error('not_paid');
+    const method=PM_LABELS[out.payment_method]||pending.pay||'Online';
+    await createPaidOrder(pending,method);
+  }catch(err){
+    console.error(err);
+    cart=pending.items;syncFab();
+    localStorage.removeItem(PENDING_KEY);
+    goTo('menu');
+    toast('Payment not confirmed — you were not charged. Please try again.');
+  }
+}
+
+// Order only enters the system after payment is confirmed
+async function createPaidOrder(pending,method){
   const{data,error}=await sb.from('drive_thru_orders').insert({
-    order_number:orderNum,customer_name:f+' '+l,customer_phone:p,
-    items:cart.map(i=>({id:i.id,name:i.name,qty:i.qty,price:i.price,cat:i.cat,temp:i.temp||null})),
-    total,payment_method:pay,eta_minutes:eta,arrival_time:arrival,status:'incoming'
+    order_number:pending.order_number,customer_name:pending.fname+' '+pending.lname,
+    customer_phone:pending.phone,items:pending.items,total:pending.total,
+    payment_method:method,eta_minutes:pending.eta,arrival_time:pending.arrival,status:'incoming'
   }).select().single();
-  if(error||!data){goBack();toast('Failed: '+(error?.message||'try again'));console.error(error);return;}
+  if(error||!data){
+    console.error(error);
+    toast('Payment received, but saving failed — please show this screen to staff.');
+    return;
+  }
+  localStorage.removeItem(PENDING_KEY);
   cart=[];syncFab();orderData=data;
   listenOrder(data);drawStatus(data);
   goTo('status');navStack=['splash','status'];
