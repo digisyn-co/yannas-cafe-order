@@ -742,7 +742,9 @@ async function doPlaceOrder(){
 // STATUS
 function listenOrder(o){
   sb.channel('ord-'+o.id).on('postgres_changes',{event:'UPDATE',schema:'public',table:'drive_thru_orders',filter:'id=eq.'+o.id},p=>{
-    orderData={...orderData,...p.new};drawStatus(orderData);
+    orderData={...orderData,...p.new};
+    if(p.new.status==='picked_up'){showThankYou();return;}
+    drawStatus(orderData);
     if(p.new.status==='preparing') toast('🔥 Being prepared now!');
     if(p.new.status==='ready') toast('✅ Your order is ready!');
   }).subscribe();
@@ -809,9 +811,18 @@ function tickTimer(o){
 async function markReceived(){
   if(!orderData) return;
   await sb.from('drive_thru_orders').update({status:'picked_up'}).eq('id',orderData.id);
+  showThankYou();
+}
+
+// Redirect to the Thank You page. Called both when the customer taps
+// "I've Received My Order" AND (via the realtime listener) when staff mark the
+// order picked up on the POS — so the customer always lands here even if the
+// ETA countdown is still running.
+function showThankYou(){
+  if(screen==='thankyou') return;
   if(orderInterval){clearInterval(orderInterval);orderInterval=null;}
-  const name=orderData.customer_name?.split(' ')[0]||'';
-  document.getElementById('ty-num').textContent=orderData.order_number;
+  const name=orderData?.customer_name?.split(' ')[0]||'';
+  if(orderData) document.getElementById('ty-num').textContent=orderData.order_number;
   document.getElementById('ty-sub').textContent=`We hope you loved it${name?', '+name:''}.\nSee you next time! ☕`;
   goTo('thankyou');navStack=['splash','thankyou'];
 }
