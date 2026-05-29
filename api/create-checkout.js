@@ -11,7 +11,7 @@ export default async function handler(req, res) {
   const SECRET = process.env.PAYMONGO_SECRET_KEY;
   if (!SECRET) return res.status(500).json({ error: 'Payment gateway not configured' });
 
-  const { items, total, order_number, customer_name, customer_phone, success_url, cancel_url } = req.body;
+  const { items, total, order_number, customer_name, customer_phone, success_url, cancel_url, payment_method_types } = req.body;
 
   if (!items?.length || !total || !success_url) {
     return res.status(400).json({ error: 'Missing required fields' });
@@ -37,7 +37,7 @@ export default async function handler(req, res) {
         data: {
           attributes: {
             line_items: lineItems,
-            payment_method_types: ['gcash', 'paymaya', 'card'],
+            payment_method_types: (Array.isArray(payment_method_types) && payment_method_types.length) ? payment_method_types : ['gcash', 'card', 'qrph'],
             success_url,
             cancel_url,
             description: `Yanna's Cafe — Drive-Thru ${order_number}`,
