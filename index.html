@@ -897,6 +897,119 @@ async function markReceived(){
 // "I've Received My Order" AND (via the realtime listener) when staff mark the
 // order picked up on the POS — so the customer always lands here even if the
 // ETA countdown is still running.
+const TY_MESSAGES=[
+  // Gratitude & Blessing
+  {note:"May the Lord bless every sip you take and fill your day with warmth as rich as this cup. Thank you for being part of our little corner of joy.",tagline:"Blessed to serve you today."},
+  {note:"As Psalm 23 reminds us, goodness and love follow us all the days of our lives. We pray that follows you home today.",tagline:"Go in grace and good flavor."},
+  {note:"\"Give thanks to the Lord, for He is good; His love endures forever.\" — Psalm 107:1. Thank you for letting us serve you.",tagline:"Every cup, a quiet blessing."},
+  {note:"We believe every meal is a gift from God. It was our joy to prepare yours. May He bless your journey home.",tagline:"Grateful hearts, warm cups."},
+  {note:"Proverbs 16:3 says to commit your work to the Lord. We do — in every cup we brew for you. Thank you for trusting us.",tagline:"Made with faith, served with love."},
+  {note:"May God's peace, which surpasses all understanding, be with you today and always. Thank you for choosing Yanna's.",tagline:"Peace be with you, dear guest."},
+  {note:"\"Taste and see that the Lord is good.\" — Psalm 34:8. We hope this cup gives you a tiny foretaste of heaven.",tagline:"Taste the goodness today."},
+  {note:"We are grateful for every customer God sends our way. You are not just an order — you are a blessing to this family business.",tagline:"You are a blessing to us."},
+  {note:"As you drive home, may the Lord go before you, beside you, and behind you. Thank you for stopping by.",tagline:"Safe travels and sweet sips."},
+  {note:"The Filipino saying goes: \"Ang taong nagpapasalamat ay pinagpapala.\" A grateful heart is always blessed. We are grateful for you.",tagline:"Salamat po, with all our hearts."},
+  // Hope & Encouragement
+  {note:"\"For I know the plans I have for you,\" declares the Lord, \"plans to prosper you.\" — Jer 29:11. Whatever you are facing today, He has a plan.",tagline:"There is hope in every morning."},
+  {note:"Romans 15:13 says may the God of hope fill you with joy and peace. May this cup be a small reminder of that joy.",tagline:"Hope in every sip."},
+  {note:"No matter what this day has brought you, God's mercies are new every morning. Thank you for letting us be part of yours.",tagline:"New mercies, fresh brews."},
+  {note:"\"I can do all things through Christ who strengthens me.\" — Phil 4:13. You can do today. We're cheering for you.",tagline:"You've got this. He's got you."},
+  {note:"Sometimes the best prayer is a quiet cup and a grateful heart. Thank you for trusting us to make that cup for you.",tagline:"A moment of peace, just for you."},
+  {note:"Cast all your anxieties on Him because He cares for you. — 1 Pet 5:7. We hope this cup gave you a moment of rest.",tagline:"Let go, let God, and sip slowly."},
+  {note:"\"The Lord is my strength and my shield; my heart trusts in Him.\" — Psalm 28:7. Carry that strength into the rest of your day.",tagline:"Strength for the road ahead."},
+  {note:"May Philippians 4:7 be yours today — the peace of God that guards your heart and your mind.",tagline:"Peace that passes understanding."},
+  {note:"We pray that the joy of the Lord is your strength today. — Nehemiah 8:10. Go with joy.",tagline:"Joy in every step today."},
+  {note:"\"He makes everything beautiful in its time.\" — Eccl 3:11. Trust the timing of your life. Beautiful things are coming.",tagline:"Beautiful things take time."},
+  // Gratitude for Family & Community
+  {note:"Yanna's was built by family, for family — and every customer becomes part of ours. Thank you for being here.",tagline:"You're family to us now."},
+  {note:"The Bible says where two or three gather in His name, He is there. When our family made this for yours, He was in the kitchen too.",tagline:"Made with Him in every step."},
+  {note:"\"Love one another as I have loved you.\" — John 15:12. That's the heart behind every cup we make. Thank you for receiving our love.",tagline:"Served with love, always."},
+  {note:"We started Yanna's with a prayer that God would send people who need warmth — and here you are. Thank you.",tagline:"Answered prayers, warm cups."},
+  {note:"Every order supports a Filipino family chasing a dream God put in our hearts. Thank you for being part of that story.",tagline:"Your support writes our story."},
+  {note:"\"Honor one another above yourselves.\" — Rom 12:10. It is our honor to serve you today.",tagline:"It is our honor, truly."},
+  {note:"San Enrique may be small, but God's goodness fills it. Thank you for letting Yanna's be part of your day here.",tagline:"Small town, big blessings."},
+  {note:"\"Where your treasure is, there your heart will be also.\" — Matt 6:21. You chose to invest in a family business today. That means everything.",tagline:"Thank you for choosing us."},
+  {note:"Filipino hospitality is rooted in faith — \"Bahala na ang Diyos.\" God will provide, and He brought you to us today.",tagline:"Bahala na ang Diyos. Salamat."},
+  {note:"Proverbs 27:17 says iron sharpens iron. Your encouragement sharpens our passion to brew better every day. Thank you.",tagline:"Your visit makes us better."},
+  // Scripture-centered
+  {note:"\"This is the day the Lord has made; let us rejoice and be glad in it.\" — Psalm 118:24. We're glad you chose to spend part of it with us.",tagline:"Rejoice in this very day."},
+  {note:"Matthew 5:16 says let your light shine. Thank you for being a light in our drive-thru today with your kindness.",tagline:"Your kindness lights our day."},
+  {note:"\"Be still and know that I am God.\" — Psalm 46:10. We hope this cup gave you a still moment in a busy day.",tagline:"Be still. Be blessed. Be caffeinated."},
+  {note:"Colossians 3:17 says whatever you do, do it all in the name of the Lord. We brewed this in His name. Enjoy it in His peace.",tagline:"Done in His name for you."},
+  {note:"\"Let all that you do be done in love.\" — 1 Cor 16:14. That is the only ingredient we never run out of.",tagline:"Love: always in stock."},
+  {note:"Isaiah 40:31 promises that those who hope in the Lord will soar on wings like eagles. May your spirit soar today.",tagline:"Soar high today, dear guest."},
+  {note:"\"The Lord bless you and keep you; the Lord make His face shine on you.\" — Numbers 6:24-25. This is our prayer for you.",tagline:"Blessed and kept, always."},
+  {note:"God sees every small act of kindness. You supporting our small business is one of them. He notices, and so do we.",tagline:"God sees every good thing."},
+  {note:"\"My grace is sufficient for you.\" — 2 Cor 12:9. On hard days, remember that. On good days, let this cup add to the grace.",tagline:"His grace is more than enough."},
+  {note:"Lamentations 3:22-23 — His mercies are new every morning. We made this cup fresh this morning, just like that mercy.",tagline:"Fresh mercy, fresh brew."},
+  // Vietnamese Coffee Heritage
+  {note:"Our Vietnamese coffee recipe carries a heritage of resilience and faith. Like the Vietnamese people, it endures and emerges strong. Thank you for honoring that.",tagline:"Resilience in every drop."},
+  {note:"The Vietnamese have a saying: \"Uống nước nhớ nguồn\" — when you drink water, remember its source. This cup came from love. Thank you.",tagline:"Remember the source. Drink deep."},
+  {note:"Vietnam's ca phe culture is one of patience — the drip never rushes. God's blessings are like that too. Thank you for your patience with us.",tagline:"Good things take their time."},
+  {note:"This recipe traveled far to reach San Enrique. Like the Gospel itself, good things are worth the journey. Thank you for being here at the end of ours.",tagline:"Worth the whole journey here."},
+  {note:"There is a peace in Vietnamese coffee culture — sitting, breathing, being present. We hope this cup gave you a holy pause.",tagline:"A holy pause for your soul."},
+  // General Heartfelt
+  {note:"Whatever brought you here today — a craving, a commute, or God's nudge — we are glad you came. Safe travels and God bless.",tagline:"Glad you came. Come back soon."},
+  {note:"You didn't just buy a drink. You bought someone's dream. And that person says: thank you from the bottom of their heart.",tagline:"You bought someone's dream today."},
+  {note:"Kindness is contagious. The way you treated our staff today spread warmth through this whole shop. Thank you.",tagline:"Your kindness echoed here."},
+  {note:"We don't take a single customer for granted. God sends each person for a reason. We're glad He sent you.",tagline:"Sent here for a reason."},
+  {note:"Every cup we make is a small act of worship — excellence in the little things for a great God. Thank you for receiving it.",tagline:"Excellence in the small things."},
+  {note:"May the Lord return to you tenfold what you invested here today — in joy, in provision, and in blessings you haven't even expected yet.",tagline:"A tenfold blessing return."},
+  {note:"\"Seek first His kingdom... and all these things will be given to you.\" — Matt 6:33. We seek to serve His kingdom one cup at a time.",tagline:"One cup at a time for Him."},
+  {note:"The warmth you feel from this cup? May you carry that same warmth home to everyone you love today.",tagline:"Carry the warmth with you."},
+  {note:"We may just be a drive-thru in San Enrique, but God placed us here on purpose, for people like you. Thank you for fulfilling that purpose today.",tagline:"Here on purpose. For you."},
+  {note:"\"Delight yourself in the Lord and He will give you the desires of your heart.\" — Psalm 37:4. We hope this cup was one of those desires.",tagline:"Desires of your heart, fulfilled."},
+  // Short & Punchy Religious
+  {note:"He is good. All the time. And so, we hope, is this cup. Thank you for choosing Yanna's today.",tagline:"All the time — He is good."},
+  {note:"God didn't bring you this far to leave you now. Keep going. And come back soon.",tagline:"He won't leave you now."},
+  {note:"You are seen. You are loved. You are valued — by God, and by us. Thank you.",tagline:"Seen. Loved. Valued. Always."},
+  {note:"\"Do not be anxious about anything.\" — Phil 4:6. Deep breath. Warm cup. You are okay.",tagline:"Deep breath. You are okay."},
+  {note:"Today is a gift from God. Don't let it pass without noticing the beauty in it — like a good cup of coffee.",tagline:"Notice the beauty today."},
+  {note:"You are God's masterpiece. — Eph 2:10. We just made you a masterpiece to drink. Enjoy.",tagline:"Masterpiece meets masterpiece."},
+  {note:"He goes before you. He walks beside you. He has your back. Go boldly into the rest of your day.",tagline:"Covered on every side."},
+  {note:"\"With God all things are possible.\" — Matt 19:26. Including finishing that to-do list. We believe in you.",tagline:"All things are possible today."},
+  {note:"Your life is not an accident. Your presence here today is not either. You are known and deeply loved.",tagline:"Known. Loved. Right on time."},
+  {note:"Psalm 121:8 — The Lord will watch over your coming and going. Drive safely. He's already there.",tagline:"He watches over your going."},
+  // More Encouragement
+  {note:"On days when everything feels heavy, remember: the One who holds the universe also holds you. Thank you for stopping in today.",tagline:"Held by the universe's Maker."},
+  {note:"The same God who paints the sunrise painted you. You are His artistry. Don't forget that on hard days.",tagline:"Painted by the same Artist."},
+  {note:"\"Weeping may stay for the night, but rejoicing comes in the morning.\" — Psalm 30:5. Your morning is coming.",tagline:"Your morning is on its way."},
+  {note:"There is no mountain too high for Him who made the mountains. Whatever you're climbing right now — He's already at the top, waiting.",tagline:"He's already at the summit."},
+  {note:"\"Be strong and courageous. Do not be afraid.\" — Josh 1:9. Go be brave out there today.",tagline:"Be brave. He is with you."},
+  {note:"God's timing is never early, never late, always perfect. Trust it. And trust that He brought you here today for a reason.",tagline:"Perfect timing. Every time."},
+  {note:"You don't have to have it all figured out. He does. That's enough.",tagline:"He has it figured out for you."},
+  {note:"Some days need coffee. All days need grace. We supplied the first. He supplies the second — endlessly.",tagline:"Coffee today. Grace forever."},
+  {note:"\"The steadfast love of the Lord never ceases.\" — Lam 3:22. Not on your worst day. Not on your hardest road. Never.",tagline:"Love that never, ever ceases."},
+  {note:"God has not forgotten you. He is working things out in ways you cannot yet see. Hold on.",tagline:"He is working it out now."},
+  // Faith & Daily Life
+  {note:"There's something holy about the ordinary — a morning coffee, a safe drive, a simple meal. God is in all of it.",tagline:"God in the ordinary moments."},
+  {note:"\"In everything give thanks.\" — 1 Thess 5:18. Even for traffic. Even for Monday. Even for us. Thank you for visiting.",tagline:"In everything — give thanks."},
+  {note:"The Filipino faith is deep and beautiful. \"Kung gusto, may paraan. Kung ayaw, may dahilan.\" Trust God's way and His reason.",tagline:"Trust His way and His reason."},
+  {note:"Mano po is not just Filipino tradition — it's a posture of humility before the elders God placed over us. We bow in gratitude for you.",tagline:"Humility and honor to you."},
+  {note:"\"The Lord is near to all who call on Him.\" — Psalm 145:18. Call on Him today. He is closer than you think.",tagline:"Closer than you can imagine."},
+  {note:"Every sunrise is God's daily reset button. Every cup of coffee is ours. Today gets a fresh start.",tagline:"Fresh start. Every single day."},
+  {note:"Ecclesiastes 3 says there is a time for everything. This was your time for coffee. May the next be full of God's best for you.",tagline:"Your time. His best for you."},
+  {note:"The Holy Spirit is called a Comforter for a reason. We hope something here comforted you today, even just a little.",tagline:"A little comfort for your soul."},
+  {note:"\"Trust in the Lord with all your heart.\" — Prov 3:5. Not just some of it. All of it. He can handle the weight.",tagline:"All of it. He can handle it."},
+  {note:"You are an answered prayer for someone out there. Live like it today. And thank you for making our prayer come true by visiting us.",tagline:"You are someone's answered prayer."},
+  // Closing & Farewell
+  {note:"Hanggang sa muli. Until next time. And in between, may God's hand be on everything you do.",tagline:"Hanggang sa muli — until next time."},
+  {note:"We'll be here when you need us again — and so will He. Safe travels, dear friend.",tagline:"We'll both be here for you."},
+  {note:"You came for coffee. We hope you also leave with a little more lightness in your heart. God bless you richly.",tagline:"Go lighter than you came."},
+  {note:"\"The grace of the Lord Jesus Christ be with your spirit.\" — Phil 4:23. And with yours, dear guest. Thank you.",tagline:"Grace with your spirit, always."},
+  {note:"Come back whenever you need a warm cup and a reminder that you are loved. Both will always be waiting for you here.",tagline:"Love and coffee — always waiting."},
+  {note:"Yanna says: Salamat, at mahal kita sa Panginoon. Thank you, and I love you in the Lord.",tagline:"Mahal kita sa Panginoon. ♥"},
+  {note:"May God multiply your kindness a hundredfold — in health, in provision, and in joy that no circumstance can take away.",tagline:"A hundredfold return for you."},
+  {note:"\"To God be the glory for the great things He has done.\" — Fanny Crosby. To God be the glory for you showing up today.",tagline:"To God be all the glory."},
+  {note:"We don't know what today holds for you, but we know Who holds today. Go with confidence. He's got every hour.",tagline:"He holds every hour of your day."},
+  {note:"This is not just a thank-you note. It is a blessing over your life: may you walk in favor, in health, in love, and in the joy of the Lord always.",tagline:"Blessed in every area of life."},
+  {note:"\"The Lord your God is with you, the Mighty Warrior who saves.\" — Zeph 3:17. He rejoices over you with singing. You are that loved.",tagline:"He sings over you today."},
+  {note:"Whatever season of life you are in right now, may this cup be a small reminder that God provides in every one of them.",tagline:"Provision in every season."},
+  {note:"We prayed before we opened today that God would send people who need to feel loved. Here you are. It's not a coincidence.",tagline:"Not a coincidence — you're here."},
+  {note:"\"May the God of hope fill you with all joy and peace as you trust in Him.\" — Rom 15:13. Joy and peace, dear friend. Go carry them both.",tagline:"Joy and peace — carry them home."},
+  {note:"\"He who began a good work in you will carry it on to completion.\" — Phil 1:6. Whatever you are building — He is not finished yet.",tagline:"He is not finished with you yet."},
+];
+
 function showThankYou(){
   if(screen==='thankyou') return;
   if(orderInterval){clearInterval(orderInterval);orderInterval=null;}
@@ -908,6 +1021,10 @@ function showThankYou(){
   set('ty-total','₱'+(o.total||0).toLocaleString());
   const items=document.getElementById('ty-order-items');
   if(items) items.innerHTML=(o.items||[]).map(i=>`<div>${i.qty}× ${i.name}${i.temp?' ('+i.temp+')':''}</div>`).join('');
+  // Pick a random message every time
+  const msg=TY_MESSAGES[Math.floor(Math.random()*TY_MESSAGES.length)];
+  set('ty-note',msg.note);
+  set('ty-tagline',msg.tagline);
   goTo('thankyou');navStack=['splash','thankyou'];
 }
 
