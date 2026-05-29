@@ -37,7 +37,7 @@ export default async function handler(req, res) {
         data: {
           attributes: {
             line_items: lineItems,
-            payment_method_types: (Array.isArray(payment_method_types) && payment_method_types.length) ? payment_method_types : ['gcash', 'paymaya', 'card'],
+            payment_method_types: (Array.isArray(payment_method_types) && payment_method_types.length) ? payment_method_types : ['gcash', 'card', 'qrph'],
             success_url,
             cancel_url,
             description: `Yanna's Cafe — Drive-Thru ${order_number}`,
