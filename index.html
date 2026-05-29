@@ -223,7 +223,7 @@ html,body{height:100%;height:100dvh;background:var(--bg);color:var(--text);font-
 .step-desc{font-size:12px;color:var(--text3)}
 
 .ready-card{margin:12px 22px 0;background:rgba(52,199,89,0.07);border-radius:var(--rl);padding:20px;border:1px solid rgba(52,199,89,0.2);text-align:center;animation:pop .4s cubic-bezier(.34,1.56,.64,1)}
-@keyframes pop{from{transform:scale(0.92);opacity:0}to{transform:scale(1);opacity:1}}
+@keyframes spin{to{transform:rotate(360deg)}}from{transform:scale(0.92);opacity:0}to{transform:scale(1);opacity:1}}
 .ready-icon{font-size:34px;margin-bottom:8px}
 .ready-title{font-family:'Playfair Display',serif;font-size:20px;color:var(--green);margin-bottom:4px}
 .ready-sub{font-size:13px;color:var(--text3)}
@@ -388,17 +388,15 @@ html,body{height:100%;height:100dvh;background:var(--bg);color:var(--text);font-
     <div class="eta-body">
       <div class="eta-card">
         <div class="eta-card-icon">🚗</div>
-        <div class="eta-card-text">We'll start making your order when you're <strong>5–7 minutes away</strong> — so everything's hot (or cold!) when you pull up.</div>
+        <div class="eta-card-text">We'll start making your order at the <strong>right moment</strong> — so everything's hot (or cold!) when you pull up.</div>
       </div>
-      <div class="eta-grid">
-        <div class="eta-tile" data-min="5" onclick="pickEta(5)"><div class="eta-num">5</div><div class="eta-unit">min away</div></div>
-        <div class="eta-tile" data-min="10" onclick="pickEta(10)"><div class="eta-num">10</div><div class="eta-unit">min away</div></div>
-        <div class="eta-tile" data-min="15" onclick="pickEta(15)"><div class="eta-num">15</div><div class="eta-unit">min away</div></div>
-        <div class="eta-tile" data-min="20" onclick="pickEta(20)"><div class="eta-num">20</div><div class="eta-unit">min away</div></div>
+      <div id="gps-detect-card" style="background:var(--warm2);border-radius:var(--rl);border:1px solid rgba(240,232,214,0.07);padding:28px 22px;text-align:center;margin-bottom:12px">
+        <div id="gps-spinner" style="font-size:36px;margin-bottom:14px;animation:spin 1.2s linear infinite">📍</div>
+        <div id="gps-main-label" style="font-size:17px;font-weight:700;color:var(--text);margin-bottom:6px">Detecting your location…</div>
+        <div id="gps-main-sub" style="font-size:13px;color:var(--text3);line-height:1.5">Please allow location access when prompted.<br>This helps us time your order perfectly.</div>
       </div>
-      <div class="gps-row" id="gps-row" onclick="detectGPS()">
-        <span class="gps-icon" id="gps-icon">📍</span>
-        <div><div class="gps-label" id="gps-label">Use my current location</div><div class="gps-sub" id="gps-sub">Auto-detect drive time</div></div>
+      <div id="gps-retry-row" style="display:none;text-align:center;padding:10px 0">
+        <button onclick="detectGPS()" style="background:transparent;border:1px solid rgba(201,164,82,0.3);color:var(--gold);border-radius:30px;padding:10px 24px;font-size:14px;cursor:pointer;font-family:'DM Sans',sans-serif">📍 Try Again</button>
       </div>
     </div>
   </div>
@@ -478,7 +476,7 @@ html,body{height:100%;height:100dvh;background:var(--bg);color:var(--text);font-
 <script>
 const SUPABASE_URL='https://dgjtpxdbztnokfbmfjbw.supabase.co';
 const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRnanRweGRienRub2tmYm1mamJ3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk3NjY5NDAsImV4cCI6MjA5NTM0Mjk0MH0.uUyk7ppnom9PI--Fs_5wdhqQD-dtAmpB5Gv1hup6dAk';
-const CAFE_LAT=10.9402,CAFE_LNG=122.6278;
+const CAFE_LAT=11.1071257,CAFE_LNG=122.6912847;
 
 const MENU=[
   {id:1,name:'Black Coffee',cat:'Coffee',hotPrice:105,coldPrice:120,badge:'bc',hastemp:true},
@@ -519,6 +517,7 @@ function goTo(s){
   navStack.push(s);screen=s;
   if(s==='cart')buildCart();
   if(s==='details')checkDetails();
+  if(s==='eta')setTimeout(detectGPS,400);
 }
 function goBack(){
   navStack.pop();const prev=navStack[navStack.length-1]||'splash';
@@ -662,21 +661,42 @@ function checkDetails(){
 // ETA
 function pickEta(min){
   eta=min;
-  document.querySelectorAll('.eta-tile').forEach(el=>el.classList.toggle('on',parseInt(el.dataset.min)===min));
   document.getElementById('eta-next').disabled=false;
 }
 function detectGPS(){
-  const icon=document.getElementById('gps-icon');
-  const label=document.getElementById('gps-label');
-  const sub=document.getElementById('gps-sub');
-  if(!navigator.geolocation){toast('GPS not available');return;}
-  icon.textContent='⏳';label.textContent='Detecting…';
+  const spinner=document.getElementById('gps-spinner');
+  const label=document.getElementById('gps-main-label');
+  const sub=document.getElementById('gps-main-sub');
+  const retry=document.getElementById('gps-retry-row');
+  const btn=document.getElementById('eta-next');
+  if(spinner) spinner.style.animation='spin 1.2s linear infinite';
+  if(spinner) spinner.textContent='📍';
+  if(label) label.textContent='Detecting your location…';
+  if(sub) sub.innerHTML='Please allow location access when prompted.<br>This helps us time your order perfectly.';
+  if(retry) retry.style.display='none';
+  if(btn) btn.disabled=true;
+  if(!navigator.geolocation){
+    if(spinner){spinner.textContent='❌';spinner.style.animation='none';}
+    if(label) label.textContent='GPS not available';
+    if(sub) sub.textContent='Your device does not support location detection.';
+    if(retry) retry.style.display='block';
+    return;
+  }
   navigator.geolocation.getCurrentPosition(pos=>{
     const d=haversine(pos.coords.latitude,pos.coords.longitude,CAFE_LAT,CAFE_LNG);
-    const m=Math.min(Math.max(3,Math.round(d/0.5)),30);
-    pickEta(m);icon.textContent='✅';label.textContent=`${d.toFixed(1)} km away`;sub.textContent=`About ${m} min drive`;
-    toast('Location detected — '+m+' min away');
-  },()=>{icon.textContent='📍';label.textContent='Use my current location';sub.textContent='Auto-detect drive time';toast('Could not get location');},{timeout:8000});
+    const m=Math.min(Math.max(2,Math.round(d/0.4)),45);
+    pickEta(m);
+    if(spinner){spinner.textContent='✅';spinner.style.animation='none';}
+    if(label) label.textContent=`You're about ${m} min away`;
+    if(sub) sub.textContent=`${d.toFixed(1)} km from Yanna's · We'll time your order perfectly.`;
+  },err=>{
+    if(spinner){spinner.textContent='📍';spinner.style.animation='none';}
+    if(label) label.textContent='Location access denied';
+    if(sub) sub.innerHTML=err.code===1
+      ?'Please allow location in your browser settings, then try again.'
+      :'Could not detect location. Please try again.';
+    if(retry) retry.style.display='block';
+  },{timeout:10000,maximumAge:60000});
 }
 function haversine(a,b,c,d){
   const R=6371,dA=(c-a)*Math.PI/180,dB=(d-b)*Math.PI/180;
@@ -1033,7 +1053,7 @@ function orderAgain(){
   orderData=null;eta=null;pay='GCash';
   ['fname','lname','phone'].forEach(id=>document.getElementById(id).value='');
   ['gcash','qrph','card'].forEach(k=>document.getElementById('pay-'+k).classList.toggle('on',k==='gcash'));
-  document.querySelectorAll('.eta-tile').forEach(el=>el.classList.remove('on'));
+  eta=null;
   navStack=['splash'];screen='thankyou';goTo('menu');
 }
 function shareApp(){
