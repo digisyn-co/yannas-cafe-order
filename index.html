@@ -74,10 +74,10 @@ html,body{height:100%;height:100dvh;background:var(--bg);color:var(--text);font-
 .menu-eyebrow{font-size:11px;color:var(--text3);letter-spacing:.06em;margin-bottom:4px}
 .menu-headline{font-family:'Playfair Display',serif;font-size:26px;font-weight:900;color:var(--text);line-height:1;margin-bottom:16px}
 .menu-topbar-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
-.menu-logo-sm{height:32px;object-fit:contain;opacity:0.85}
+.menu-logo-sm{height:48px;object-fit:contain;filter:drop-shadow(0 1px 3px rgba(0,0,0,0.6))}
 .cart-pill{display:flex;align-items:center;gap:8px;padding:8px 14px;border-radius:var(--rx);background:var(--warm2);border:1px solid rgba(201,164,82,0.18);cursor:pointer;transition:.15s;position:relative}
 .cart-pill:active{background:var(--warm3)}
-.cart-pill-icon{font-size:17px}
+.cart-pill-label{font-size:13px;font-weight:700;color:var(--gold);letter-spacing:.02em}
 .cart-pill-count{font-size:13px;font-weight:700;color:var(--gold);display:none}
 .cat-row{display:flex;gap:6px;padding:0 22px 16px;overflow-x:auto;flex-shrink:0}
 .cat-row::-webkit-scrollbar{display:none}
@@ -324,13 +324,13 @@ html,body{height:100%;height:100dvh;background:var(--bg);color:var(--text);font-
   <div class="menu-topbar">
     <div class="menu-topbar-row">
       <div>
-        <div class="menu-eyebrow">Good day ☕</div>
+        <div class="menu-eyebrow">Good day</div>
         <div class="menu-headline">What are<br>you having?</div>
       </div>
       <div style="display:flex;align-items:center;gap:10px">
-        <img src="https://raw.githubusercontent.com/digisyn-co/yannas-cafe-order/main/logo.png" class="menu-logo-sm" alt="Yanna's">
+        <img src="https://raw.githubusercontent.com/digisyn-co/yannas-cafe-order/main/logo-full.png" class="menu-logo-sm" alt="Yanna's">
         <div class="cart-pill" onclick="goTo('cart')">
-          <span class="cart-pill-icon">🛒</span>
+          <span class="cart-pill-label">Cart</span>
           <span class="cart-pill-count" id="cart-count-pill">0</span>
         </div>
       </div>
@@ -574,7 +574,7 @@ function buildMenu(){
   const list=activeCat==='All'?MENU:MENU.filter(i=>i.cat===activeCat);
   const cats=[...new Set(list.map(i=>i.cat))];
   document.getElementById('menu-list').innerHTML=cats.map(cat=>`
-    <div class="menu-section-head"><span class="msh-label">${catEmoji(cat)} ${cat}</span><span class="msh-line"></span></div>
+    <div class="menu-section-head"><span class="msh-label">${cat}</span><span class="msh-line"></span></div>
     <div>${list.filter(i=>i.cat===cat).map(itemHtml).join('')}</div>`).join('');
   syncFab();
 }
@@ -582,7 +582,7 @@ const catEmoji=c=>({Coffee:'☕',Matcha:'🍵','Fruit Tea':'🧋',Food:'🥖',Ri
 function setCat(c){activeCat=c;buildMenu();}
 
 function itemHtml(item){
-  const star=item.star?`<span class="star">★</span>`:'';
+  const star='';
   if(item.addon){
     return `<div class="addon-item" onclick="addItem(${item.id})">
       <div class="addon-label">+ ${item.name.replace('Add-on: ','')}</div>
@@ -600,11 +600,11 @@ function itemHtml(item){
       </div>
       <div class="mi-options">
         <div class="mi-opt" onclick="addItem(${item.id},'Hot')">
-          <div class="mi-opt-left"><div class="mi-opt-label">🔥 Hot · 12oz</div><div class="mi-opt-price">₱${item.hotPrice}</div></div>
+          <div class="mi-opt-left"><div class="mi-opt-label">Hot · 12oz</div><div class="mi-opt-price">₱${item.hotPrice}</div></div>
           <div class="mi-opt-add">+</div>
         </div>
         <div class="mi-opt" onclick="addItem(${item.id},'Cold')">
-          <div class="mi-opt-left"><div class="mi-opt-label">🧊 Cold · 16oz</div><div class="mi-opt-price">₱${item.coldPrice}</div></div>
+          <div class="mi-opt-left"><div class="mi-opt-label">Cold · 16oz</div><div class="mi-opt-price">₱${item.coldPrice}</div></div>
           <div class="mi-opt-add">+</div>
         </div>
       </div>
