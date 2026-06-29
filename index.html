@@ -859,15 +859,26 @@ async function handlePaymentReturn(){
 
 // Order only enters the system after payment is confirmed
 async function createPaidOrder(pending,method){
-  const{data,error}=await sb.from('drive_thru_orders').insert({
-    order_number:pending.order_number,customer_name:pending.fname+' '+pending.lname,
+  const base={customer_name:pending.fname+' '+pending.lname,
     customer_phone:pending.phone,items:pending.items,total:pending.total,
-    payment_method:method,eta_minutes:pending.eta,arrival_time:pending.arrival,status:'incoming'
-  }).select().single();
+    payment_method:method,eta_minutes:pending.eta,arrival_time:pending.arrival,status:'incoming'};
+  // Prefer a DB-assigned order number (gapless, collision-free). Fall back to the
+  // client number only if the database default isn't in place yet.
+  let res=await sb.from('drive_thru_orders').insert(base).select().single();
+  if(res.error){
+    const m=((res.error.message||'')+' '+(res.error.code||'')+' '+(res.error.details||''));
+    if(/null value|not-null|23502|order_number/i.test(m)){
+      res=await sb.from('drive_thru_orders').insert({...base,order_number:pending.order_number}).select().single();
+    }
+  }
+  let data=res.data; const error=res.error;
   if(error||!data){
     console.error(error);
     toast('Payment received, but saving failed — please show this screen to staff.');
     return;
+  }
+  if(!data.order_number){
+    try{ await sb.from('drive_thru_orders').update({order_number:pending.order_number}).eq('id',data.id); data.order_number=pending.order_number; }catch(_){}
   }
   localStorage.removeItem(PENDING_KEY);
   cart=[];syncFab();orderData=data;
