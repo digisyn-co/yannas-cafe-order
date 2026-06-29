@@ -2,7 +2,12 @@
 // Verifies a PayMongo Checkout Session payment status server-side
 
 export default async function handler(req, res) {
-  res.setHeader('Access-Control-Allow-Origin', '*');
+  const __origin = req.headers.origin || '';
+  const __allowed = (process.env.ALLOWED_ORIGINS || '').split(',').map(o => o.trim()).filter(Boolean);
+  if (__origin && (__origin.endsWith('.vercel.app') || __allowed.includes(__origin))) {
+    res.setHeader('Access-Control-Allow-Origin', __origin);
+  }
+  res.setHeader('Vary', 'Origin');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
   if (req.method === 'OPTIONS') return res.status(200).end();
