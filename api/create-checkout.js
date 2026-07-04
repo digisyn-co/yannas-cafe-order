@@ -13,7 +13,7 @@ const PRICES = {
   6: 160,                        // Matcha Latte
   7: 175,                        // Salt Matcha
   8: 185,                        // Egg Custard Matcha
-  9: 110, 10: 110, 11: 110, 12: 110,   // Fruit Teas
+  9: 110,                              // Fruit Tea (single item, flavors by availability)
   13: 170, 14: 165, 15: 180,           // Sandwiches (Pork 170 / Chicken 165 / Beef 180)
   16: { hot: 225, cold: 240 },         // Combo: Pork + Salted Coffee
   17: { hot: 235, cold: 250 },         // Combo: Chicken + Coconut Coffee
