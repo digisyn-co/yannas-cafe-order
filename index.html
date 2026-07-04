@@ -1274,13 +1274,21 @@ const MENU=[
 let sb,cart=[],screen='splash',navStack=['splash'];
 let pay='GCash',eta=null,orderInterval=null,orderData=null;
 
-window.onload=()=>{sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);buildMenu();handlePaymentReturn();}
+// Build menu immediately on DOM ready — doesn't need Supabase
+document.addEventListener('DOMContentLoaded',()=>{ buildMenu(); });
+// Init Supabase and handle payment return after full load
+window.onload=()=>{
+  try{ sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY); }
+  catch(e){ console.warn('Supabase init failed',e); }
+  handlePaymentReturn();
+}
 
 // NAV
 function goTo(s){
   document.getElementById('screen-'+screen).classList.add(screen==='splash'?'hidden':'slide-left');
   document.getElementById('screen-'+s).classList.remove('hidden','slide-left');
   navStack.push(s);screen=s;
+  if(s==='menu'&&!document.getElementById('menu-list').children.length)buildMenu();
   if(s==='cart')buildCart();
   if(s==='details')checkDetails();
 }
