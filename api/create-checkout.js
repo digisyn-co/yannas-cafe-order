@@ -13,10 +13,14 @@ const PRICES = {
   6: 160,                        // Matcha Latte
   7: 175,                        // Salt Matcha
   8: 185,                        // Egg Custard Matcha
-  9: 110, 10: 110, 11: 110, 12: 110,   // Fruit Teas
-  13: 140, 14: 130, 15: 155,           // Sandwiches
-  19: 130, 20: 115, 21: 145,           // Fried Rice
-  22: 55, 23: 55, 24: 65,              // Add-ons
+  9: 110,                              // Fruit Tea (single item, flavors by availability)
+  13: 170, 14: 165, 15: 180,           // Sandwiches (Pork 170 / Chicken 165 / Beef 180)
+  16: { hot: 225, cold: 240 },         // Combo: Pork + Salted Coffee
+  17: { hot: 235, cold: 250 },         // Combo: Chicken + Coconut Coffee
+  18: { hot: 245, cold: 260 },         // Combo: Beef + Black Coffee
+  19: 130, 20: 115, 21: 145,           // Fried Rice (Pork/Chicken/Beef)
+  22: 55, 23: 55, 24: 70, 25: 25,      // Rice add-ons (Bacon/Tocino/Tapa 70/Egg 25)
+  26: 30, 27: 20, 28: 40,              // Sandwich add-ons (Farm-Fresh Egg/Cheese/House Dip)
 };
 
 const ALLOWED = (process.env.ALLOWED_ORIGINS || '').split(',').map(o => o.trim()).filter(Boolean);
