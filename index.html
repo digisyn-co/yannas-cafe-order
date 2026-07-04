@@ -494,9 +494,9 @@ const MENU=[
   {id:10,name:'Strawberry Fruit Tea',cat:'Fruit Tea',price:110,badge:'bt'},
   {id:11,name:'Mango Fruit Tea',cat:'Fruit Tea',price:110,badge:'bt'},
   {id:12,name:'Passion Fruit Tea',cat:'Fruit Tea',price:110,badge:'bt'},
-  {id:13,name:'BBQ Pork Sandwich',cat:'Food',price:140,badge:'bf'},
-  {id:14,name:'Chicken BBQ Sandwich',cat:'Food',price:130,badge:'bf'},
-  {id:15,name:'Beef BBQ Sandwich',cat:'Food',price:155,badge:'bf'},
+  {id:13,name:'BBQ Pork Sandwich',cat:'Food',price:170,badge:'bf'},
+  {id:14,name:'Chicken BBQ Sandwich',cat:'Food',price:165,badge:'bf'},
+  {id:15,name:'Beef BBQ Sandwich',cat:'Food',price:180,badge:'bf'},
   {id:16,name:'Pork + Salted Coffee',cat:'Combo',hotPrice:225,coldPrice:240,badge:'bco',hastemp:true},
   {id:17,name:'Chicken + Coconut Coffee',cat:'Combo',hotPrice:235,coldPrice:250,badge:'bco',hastemp:true},
   {id:18,name:'Beef + Black Coffee',cat:'Combo',hotPrice:245,coldPrice:260,badge:'bco',hastemp:true},
@@ -505,7 +505,11 @@ const MENU=[
   {id:21,name:'Beef Crunchy Egg Fried Rice',cat:'Rice',price:145,badge:'br'},
   {id:22,name:'Add-on: Bacon',  cat:'Rice',price:55,badge:'br',addon:true},
   {id:23,name:'Add-on: Tocino', cat:'Rice',price:55,badge:'br',addon:true},
-  {id:24,name:'Add-on: Tapa',   cat:'Rice',price:65,badge:'br',addon:true},
+  {id:24,name:'Add-on: Tapa',   cat:'Rice',price:70,badge:'br',addon:true},
+  {id:25,name:'Add-on: Egg',    cat:'Rice',price:25,badge:'br',addon:true},
+  {id:26,name:'Add-on: Farm-Fresh Egg',cat:'Food',price:30,badge:'bf',addon:true},
+  {id:27,name:'Add-on: Cheese', cat:'Food',price:20,badge:'bf',addon:true},
+  {id:28,name:'Add-on: Signature House Dip',cat:'Food',price:40,badge:'bf',addon:true},
 ];
 
 let sb,cart=[],screen='splash',navStack=['splash'];
@@ -582,9 +586,13 @@ function itemHtml(item){
 }
 
 function addItem(id,temp){
-  const isAddon=[22,23,24].includes(id);
-  if(isAddon&&!cart.some(i=>[19,20,21].includes(i.id))){
+  const isRiceAddon=[22,23,24,25].includes(id);
+  const isFoodAddon=[26,27,28].includes(id);
+  if(isRiceAddon&&!cart.some(i=>[19,20,21].includes(i.id))){
     toast('Add a rice dish first! 🍚');return;
+  }
+  if(isFoodAddon&&!cart.some(i=>[13,14,15].includes(i.id))){
+    toast('Add a sandwich first! 🥖');return;
   }
   const item=MENU.find(m=>m.id===id);
   const key=id+(temp||'');
@@ -596,6 +604,7 @@ function addItem(id,temp){
 }
 function updateAddonState(){
   const hasRice=cart.some(i=>[19,20,21].includes(i.id));
+  const hasSandwich=cart.some(i=>[13,14,15].includes(i.id));
   document.querySelectorAll('.addon-item').forEach(el=>{
     el.classList.toggle('disabled',!hasRice);
   });
