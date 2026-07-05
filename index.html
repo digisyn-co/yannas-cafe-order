@@ -79,11 +79,17 @@ html, body {
   position: absolute; inset: 0;
   display: flex; flex-direction: column;
   background: var(--bg);
-  transition: transform .35s cubic-bezier(.4,0,.2,1), opacity .35s;
   overflow: hidden;
 }
-.screen.hidden    { transform: translateX(100%); opacity: 0; pointer-events: none; }
-.screen.slide-left{ transform: translateX(-6%); opacity: 0; pointer-events: none; }
+.screen-enter {
+  animation: slide-in .3s cubic-bezier(.4,0,.2,1);
+}
+@keyframes slide-in {
+  from { transform: translateX(8%); opacity: 0; }
+  to   { transform: translateX(0);  opacity: 1; }
+}
+.screen.hidden    { display: none; pointer-events: none; }
+
 .screen-body {
   flex: 1; min-height: 0;
   overflow-y: auto; -webkit-overflow-scrolling: touch;
@@ -1285,17 +1291,20 @@ window.onload=()=>{
 
 // NAV
 function goTo(s){
-  document.getElementById('screen-'+screen).classList.add(screen==='splash'?'hidden':'slide-left');
-  document.getElementById('screen-'+s).classList.remove('hidden','slide-left');
+  document.getElementById('screen-'+screen).classList.add('hidden');
+  const el=document.getElementById('screen-'+s);
+  el.classList.remove('hidden');
+  el.classList.add('screen-enter');
+  setTimeout(()=>el.classList.remove('screen-enter'),350);
   navStack.push(s);screen=s;
-  if(s==='menu'&&!document.getElementById('menu-list').children.length)buildMenu();
+  if(s==='menu'){buildMenu();syncFab();}
   if(s==='cart')buildCart();
   if(s==='details')checkDetails();
 }
 function goBack(){
   navStack.pop();const prev=navStack[navStack.length-1]||'splash';
   document.getElementById('screen-'+screen).classList.add('hidden');
-  document.getElementById('screen-'+prev).classList.remove('hidden','slide-left');
+  document.getElementById('screen-'+prev).classList.remove('hidden');
   screen=prev;
 }
 
