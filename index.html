@@ -1283,7 +1283,7 @@ let sb,cart=[],screen='splash',navStack=['splash'];
 let pay='GCash',eta=null,orderInterval=null,orderData=null;
 
 // Build menu immediately on DOM ready — doesn't need Supabase
-document.addEventListener('DOMContentLoaded',()=>{ buildMenu(); });
+document.addEventListener('DOMContentLoaded',()=>{ console.log('DOMContentLoaded fired'); buildMenu(); });
 // Init Supabase and handle payment return after full load
 window.onload=()=>{
   try{ sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY); }
@@ -1293,6 +1293,7 @@ window.onload=()=>{
 
 // NAV
 function goTo(s){
+  console.log('goTo called:',s,'from:',screen);
   document.getElementById('screen-'+screen).classList.add('hidden');
   const el=document.getElementById('screen-'+s);
   el.classList.remove('hidden');
@@ -1313,7 +1314,7 @@ function goBack(){
 // MENU
 const CATS=['All','Coffee','Matcha','Fruit Tea','Food','Rice','Combo'];
 let activeCat='All';
-function buildMenu(){
+function buildMenu(){ console.log('buildMenu called, MENU length:',MENU.length);
   document.getElementById('cat-row').innerHTML=CATS.map(c=>`<button class="cat-btn${c===activeCat?' active':''}" onclick="setCat('${c}')">${c}</button>`).join('');
   const list=activeCat==='All'?MENU:MENU.filter(i=>i.cat===activeCat);
   const cats=[...new Set(list.map(i=>i.cat))];
