@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Yanna's Vietnamese Coffee</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;0,900;1,500;1,700&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" async></script>
 <style>
 /* ═══════════════════════════════════════════
    NOCTURNAL GILT — Design System Tokens
@@ -1282,14 +1282,12 @@ const MENU=[
 let sb,cart=[],screen='splash',navStack=['splash'];
 let pay='GCash',eta=null,orderInterval=null,orderData=null;
 
-// Build menu immediately on DOM ready — doesn't need Supabase
-document.addEventListener('DOMContentLoaded',()=>{ console.log('DOMContentLoaded fired'); buildMenu(); });
-// Init Supabase and handle payment return after full load
-window.onload=()=>{
-  try{ sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY); }
-  catch(e){ console.warn('Supabase init failed',e); }
+// Init after all JS is parsed
+window.addEventListener('load',()=>{
+  buildMenu();
+  try{ sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY); }catch(e){}
   handlePaymentReturn();
-}
+});
 
 // NAV
 function goTo(s){
