@@ -1721,3 +1721,13 @@ function orderAgain(){
   document.querySelectorAll('.eta-tile').forEach(el=>el.classList.remove('on'));
   navStack=['splash'];screen='thankyou';goTo('menu');
 }
+
+function shareApp(){
+  if(navigator.share){navigator.share({title:"Yanna's Vietnamese Coffee",text:'Order drive-thru ahead!',url:window.location.origin});}
+  else{navigator.clipboard?.writeText(window.location.origin);toast('Link copied!');}
+}
+
+function toast(msg){const el=document.getElementById('toast');el.textContent=msg;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),2600);}
+</script>
+</body>
+</html>
