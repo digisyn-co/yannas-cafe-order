@@ -12,7 +12,7 @@
 ═══════════════════════════════════════════ */
 :root {
   /* Backgrounds — layered espresso */
-  --bg:        #0F0A05;
+  --bg:        #0A0A0A;
   --bg-1:      #120d07;
   --bg-2:      #1A1108;
   --bg-3:      #201b14;
@@ -20,20 +20,21 @@
   --bg-5:      #3A2B18;
 
   /* Brand gold */
-  --gold:      #e9c16c;
-  --gold-d:    #C9A452;
-  --gold-dim:  #8B6B2E;
-  --gold-glow: rgba(201,164,82,0.15);
+  --gold:      #C7A252;
+  --gold-d:    #C7A252;
+  --gold-dim:  #8A6A2E;
+  --gold-glow: rgba(199,162,82,0.15);
+  --star:      #F2C230; /* signature-item marker, per Branding Guidelines 2.2 */
 
   /* Text */
-  --text:      #F0E8D6;
-  --text2:     rgba(240,232,214,0.65);
-  --text3:     rgba(240,232,214,0.35);
-  --text4:     rgba(240,232,214,0.15);
+  --text:      #F7F3E9;
+  --text2:     rgba(247,243,233,0.65);
+  --text3:     rgba(247,243,233,0.35);
+  --text4:     rgba(247,243,233,0.15);
 
   /* Borders */
   --sep:       rgba(255,255,255,0.05);
-  --sep2:      rgba(201,164,82,0.12);
+  --sep2:      rgba(199,162,82,0.12);
 
   /* Status */
   --green:  #34C759;
@@ -152,7 +153,7 @@ html, body {
   cursor: pointer;
   transition: .15s;
   letter-spacing: .03em;
-  box-shadow: 0 8px 32px rgba(233,193,108,0.2);
+  box-shadow: 0 8px 32px rgba(199,162,82,0.2);
 }
 .cta-btn:active { background: #d4af62; transform: scale(0.98); }
 .cta-btn:disabled { opacity: 0.3; cursor: not-allowed; transform: none; box-shadow: none; }
@@ -192,7 +193,7 @@ html, body {
   position: absolute;
   width: 320px; height: 320px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(233,193,108,0.1) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(199,162,82,0.1) 0%, transparent 70%);
   pointer-events: none;
   animation: breathe-glow 5s ease-in-out infinite;
   pointer-events: none;
@@ -207,7 +208,7 @@ html, body {
   animation: breathe 5s ease-in-out infinite;
   position: relative; z-index: 1;
   margin-bottom: 24px;
-  box-shadow: 0 0 60px rgba(233,193,108,0.12);
+  box-shadow: 0 0 60px rgba(199,162,82,0.12);
 }
 @keyframes breathe { 0%,100%{ transform: scale(1); } 50%{ transform: scale(1.04); } }
 .splash-location {
@@ -245,7 +246,7 @@ html, body {
   cursor: pointer;
   transition: .15s;
   letter-spacing: .02em;
-  box-shadow: 0 8px 32px rgba(233,193,108,0.25);
+  box-shadow: 0 8px 32px rgba(199,162,82,0.25);
 }
 .splash-cta:active { background: #d4af62; transform: scale(0.98); }
 .splash-ghost {
@@ -253,14 +254,14 @@ html, body {
   border-radius: var(--rx);
   background: transparent;
   color: var(--gold-d);
-  border: 1px solid rgba(201,164,82,0.3);
+  border: 1px solid rgba(199,162,82,0.3);
   font-size: 14px; font-weight: 600;
   font-family: 'DM Sans', sans-serif;
   cursor: pointer;
   transition: .15s;
   letter-spacing: .02em;
 }
-.splash-ghost:active { background: rgba(201,164,82,0.08); }
+.splash-ghost:active { background: rgba(199,162,82,0.08); }
 
 /* ═══════════════════════════════════════════
    ② MENU
@@ -325,7 +326,7 @@ html, body {
   color: var(--bg);
   border-color: var(--gold);
   font-weight: 700;
-  box-shadow: 0 0 16px rgba(233,193,108,0.2);
+  box-shadow: 0 0 16px rgba(199,162,82,0.2);
 }
 /* Section head */
 .menu-section-head {
@@ -359,7 +360,7 @@ html, body {
   font-size: 17px; font-weight: 600;
   color: var(--text); line-height: 1.3;
 }
-.mi-name .star { color: var(--gold); font-size: 13px; margin-right: 3px; }
+.mi-name .star { color: var(--star); font-size: 13px; margin-right: 3px; }
 .mi-tag {
   font-size: 10px; padding: 3px 10px;
   border-radius: 6px; font-weight: 600;
@@ -368,8 +369,8 @@ html, body {
 }
 .bc  { background: rgba(255,149,0,0.1);  color: #FF9500; }
 .bt  { background: rgba(52,199,89,0.1);  color: #30D158; }
-.bf  { background: rgba(240,232,214,0.07); color: var(--text2); }
-.bco { background: rgba(233,193,108,0.1); color: var(--gold-d); }
+.bf  { background: rgba(247,243,233,0.07); color: var(--text2); }
+.bco { background: rgba(199,162,82,0.1); color: var(--gold-d); }
 .br  { background: rgba(255,149,0,0.08);  color: #FF9500; }
 .bm  { background: rgba(52,199,89,0.1);  color: #30D158; }
 
@@ -394,7 +395,7 @@ html, body {
 .mi-opt-add {
   width: 28px; height: 28px;
   border-radius: 50%;
-  background: rgba(233,193,108,0.12);
+  background: rgba(199,162,82,0.12);
   display: flex; align-items: center; justify-content: center;
   font-size: 18px; color: var(--gold); flex-shrink: 0;
 }
@@ -408,8 +409,8 @@ html, body {
 }
 .mi-add-btn {
   display: flex; align-items: center; gap: 6px;
-  background: rgba(233,193,108,0.1);
-  border: 1px solid rgba(233,193,108,0.2);
+  background: rgba(199,162,82,0.1);
+  border: 1px solid rgba(199,162,82,0.2);
   border-radius: var(--rx);
   padding: 9px 18px;
   cursor: pointer;
@@ -418,7 +419,7 @@ html, body {
   font-family: 'DM Sans', sans-serif;
   transition: .15s;
 }
-.mi-add-btn:active { background: rgba(233,193,108,0.2); }
+.mi-add-btn:active { background: rgba(199,162,82,0.2); }
 /* Add-on row */
 .addon-item {
   padding: 12px 24px 12px 36px;
@@ -426,7 +427,7 @@ html, body {
   display: flex; align-items: center; justify-content: space-between;
   cursor: pointer; transition: .1s;
 }
-.addon-item:active { background: rgba(233,193,108,0.04); }
+.addon-item:active { background: rgba(199,162,82,0.04); }
 .addon-item.disabled { opacity: 0.3; pointer-events: none; }
 .addon-label { font-size: 13px; color: var(--text2); }
 .addon-price {
@@ -437,8 +438,8 @@ html, body {
 .addon-add {
   font-size: 12px; font-weight: 700;
   color: var(--gold-d);
-  background: rgba(201,164,82,0.08);
-  border: 1px solid rgba(201,164,82,0.18);
+  background: rgba(199,162,82,0.08);
+  border: 1px solid rgba(199,162,82,0.18);
   border-radius: 20px;
   padding: 5px 14px;
   cursor: pointer;
@@ -459,7 +460,7 @@ html, body {
   font-size: 15px; font-weight: 700;
   font-family: 'DM Sans', sans-serif;
   cursor: pointer;
-  box-shadow: 0 8px 40px rgba(233,193,108,0.35);
+  box-shadow: 0 8px 40px rgba(199,162,82,0.35);
   display: flex; align-items: center; gap: 14px;
   opacity: 0; pointer-events: none;
   transition: opacity .28s, transform .28s;
@@ -556,8 +557,8 @@ html, body {
 .form-input {
   width: 100%; padding: 16px 18px;
   border-radius: 16px;
-  border: 1px solid rgba(240,232,214,0.08);
-  border-bottom: 2px solid rgba(201,164,82,0.3);
+  border: 1px solid rgba(247,243,233,0.08);
+  border-bottom: 2px solid rgba(199,162,82,0.3);
   background: var(--bg-2);
   font-size: 15px; font-family: 'DM Sans', sans-serif;
   color: var(--text); outline: none;
@@ -566,7 +567,7 @@ html, body {
 .form-input:focus {
   border-bottom-color: var(--gold);
   background: var(--bg-3);
-  box-shadow: 0 4px 16px rgba(233,193,108,0.08);
+  box-shadow: 0 4px 16px rgba(199,162,82,0.08);
 }
 .form-input::placeholder { color: var(--text4); }
 .pay-section-label {
@@ -580,15 +581,15 @@ html, body {
 .pay-card {
   padding: 18px 10px;
   border-radius: var(--r);
-  border: 1px solid rgba(240,232,214,0.07);
+  border: 1px solid rgba(247,243,233,0.07);
   background: var(--bg-2);
   text-align: center; cursor: pointer;
   transition: .2s;
 }
 .pay-card.on {
   border-color: var(--gold);
-  background: rgba(233,193,108,0.08);
-  box-shadow: 0 0 16px rgba(233,193,108,0.1);
+  background: rgba(199,162,82,0.08);
+  box-shadow: 0 0 16px rgba(199,162,82,0.1);
 }
 .pay-card.on .pay-name { color: var(--gold); }
 .pay-icon { font-size: 26px; margin-bottom: 7px; }
@@ -596,10 +597,10 @@ html, body {
 .pay-icon img.no-bg { mix-blend-mode: screen; }
 .pay-name { font-size: 11px; font-weight: 700; color: var(--text3); transition: .2s; text-transform: uppercase; letter-spacing: .06em; }
 .note-box {
-  background: rgba(233,193,108,0.05);
+  background: rgba(199,162,82,0.05);
   border-radius: var(--r);
   padding: 16px 18px;
-  border: 1px solid rgba(233,193,108,0.12);
+  border: 1px solid rgba(199,162,82,0.12);
   font-size: 13px; color: var(--text2); line-height: 1.65;
 }
 .note-box strong { color: var(--gold-d); }
@@ -629,14 +630,14 @@ html, body {
 .eta-tile {
   padding: 22px 14px;
   border-radius: var(--rl);
-  border: 1px solid rgba(240,232,214,0.07);
+  border: 1px solid rgba(247,243,233,0.07);
   background: var(--bg-2);
   text-align: center; cursor: pointer;
   transition: .2s;
 }
 .eta-tile.on {
   border-color: var(--gold);
-  background: rgba(233,193,108,0.07);
+  background: rgba(199,162,82,0.07);
   box-shadow: 0 0 16px var(--gold-glow);
 }
 .eta-tile.on .eta-num { color: var(--gold); }
@@ -652,7 +653,7 @@ html, body {
   padding: 16px 20px;
   background: var(--bg-2);
   border-radius: var(--r);
-  border: 1px solid rgba(240,232,214,0.07);
+  border: 1px solid rgba(247,243,233,0.07);
   cursor: pointer; transition: .15s;
 }
 .gps-row:active { border-color: var(--gold-dim); background: var(--bg-4); }
@@ -673,7 +674,7 @@ html, body {
 }
 .proc-spinner {
   width: 48px; height: 48px;
-  border: 2px solid rgba(233,193,108,0.15);
+  border: 2px solid rgba(199,162,82,0.15);
   border-top-color: var(--gold);
   border-radius: 50%;
   animation: spin .9s linear infinite;
@@ -717,7 +718,7 @@ html, body {
 .order-tag {
   font-size: 12px; font-weight: 700;
   color: var(--gold-d);
-  background: rgba(201,164,82,0.1);
+  background: rgba(199,162,82,0.1);
   border: 1px solid var(--sep2);
   padding: 5px 14px; border-radius: var(--rx);
   letter-spacing: .06em;
@@ -803,15 +804,15 @@ html, body {
 }
 .step-dot.done   { background: rgba(52,199,89,0.12); border: 1px solid rgba(52,199,89,0.25); }
 .step-dot.active {
-  background: rgba(233,193,108,0.12);
-  border: 1px solid rgba(233,193,108,0.3);
-  box-shadow: 0 0 0 6px rgba(233,193,108,0.06);
+  background: rgba(199,162,82,0.12);
+  border: 1px solid rgba(199,162,82,0.3);
+  box-shadow: 0 0 0 6px rgba(199,162,82,0.06);
   animation: pulse-gold 2.2s infinite;
 }
 .step-dot.wait   { background: var(--bg-3); border: 1px solid var(--sep); font-size: 13px; }
 @keyframes pulse-gold {
-  0%,100%{ box-shadow: 0 0 0 0 rgba(233,193,108,0.15); }
-  50%    { box-shadow: 0 0 0 10px rgba(233,193,108,0.04); }
+  0%,100%{ box-shadow: 0 0 0 0 rgba(199,162,82,0.15); }
+  50%    { box-shadow: 0 0 0 10px rgba(199,162,82,0.04); }
 }
 .step-text { flex: 1; }
 .step-title { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 2px; }
@@ -878,8 +879,8 @@ html, body {
   to  { opacity:1; transform:translateY(0); }
 }
 @keyframes gold-pulse {
-  0%,100%{ box-shadow:0 0 0 0 rgba(233,193,108,0); }
-  50%    { box-shadow:0 0 0 18px rgba(233,193,108,0); }
+  0%,100%{ box-shadow:0 0 0 0 rgba(199,162,82,0); }
+  50%    { box-shadow:0 0 0 18px rgba(199,162,82,0); }
 }
 .ty-hero {
   background: linear-gradient(180deg, var(--bg-2) 0%, var(--bg) 100%);
@@ -894,7 +895,7 @@ html, body {
   transform:translateX(-50%);
   width:280px; height:280px;
   border-radius:50%;
-  background:radial-gradient(circle, rgba(233,193,108,0.08) 0%, transparent 70%);
+  background:radial-gradient(circle, rgba(199,162,82,0.08) 0%, transparent 70%);
   pointer-events:none;
 }
 .ty-logo {
@@ -1010,7 +1011,7 @@ html, body {
   transition: .15s;
   animation: fade-up .5s ease .5s both;
   letter-spacing: .02em;
-  box-shadow: 0 8px 32px rgba(233,193,108,0.2);
+  box-shadow: 0 8px 32px rgba(199,162,82,0.2);
 }
 .ty-again:active { background: #d4af62; }
 .ty-share {
@@ -1251,15 +1252,15 @@ const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSI
 const CAFE_LAT=10.9402,CAFE_LNG=122.6278;
 
 const MENU=[
-  {id:1,name:'Black Coffee',cat:'Coffee',hotPrice:105,coldPrice:120,badge:'bc',hastemp:true},
-  {id:2,name:'Salted Cream Coffee',cat:'Coffee',hotPrice:145,coldPrice:160,badge:'bc',hastemp:true,star:true},
-  {id:3,name:'Coconut Coffee',cat:'Coffee',hotPrice:160,coldPrice:175,badge:'bc',hastemp:true,star:true},
-  {id:4,name:'Egg Coffee',cat:'Coffee',hotPrice:170,coldPrice:185,badge:'bc',hastemp:true,star:true},
-  {id:5,name:'Milk Coffee',cat:'Coffee',hotPrice:115,coldPrice:130,badge:'bc',hastemp:true},
-  {id:6,name:'Matcha Latte',cat:'Matcha',hotPrice:145,coldPrice:160,badge:'bm',hastemp:true},
-  {id:7,name:'Salt Matcha',cat:'Matcha',hotPrice:160,coldPrice:175,badge:'bm',hastemp:true,star:true},
-  {id:8,name:'Egg Custard Matcha',cat:'Matcha',hotPrice:170,coldPrice:185,badge:'bm',hastemp:true,star:true},
-  {id:9,name:'Fruit Tea',cat:'Fruit Tea',price:110,badge:'bt'},
+  {id:1,name:'Traditional Black Coffee (Cà Phê Đen)',cat:'Coffee',hotPrice:105,coldPrice:120,badge:'bc',hastemp:true},
+  {id:2,name:'Salted Cream Coffee (Cà Phê Muối)',cat:'Coffee',price:160,badge:'bc',star:true},
+  {id:3,name:'Coconut Coffee (Cà Phê Cốt Dừa)',cat:'Coffee',price:175,badge:'bc',star:true},
+  {id:4,name:'Egg Coffee (Cà Phê Trứng)',cat:'Coffee',hotPrice:170,coldPrice:185,badge:'bc',hastemp:true,star:true},
+  {id:5,name:'Vietnamese Milk Coffee (Cà Phê Sữa)',cat:'Coffee',hotPrice:115,coldPrice:130,badge:'bc',hastemp:true},
+  {id:6,name:'Matcha Latte (Matcha Sữa)',cat:'Matcha',hotPrice:145,coldPrice:160,badge:'bm',hastemp:true,star:true},
+  {id:7,name:'Salt Matcha (Matcha Muối)',cat:'Matcha',price:175,badge:'bm',star:true},
+  {id:8,name:'Egg Custard Matcha (Matcha Trứng)',cat:'Matcha',hotPrice:170,coldPrice:185,badge:'bm',hastemp:true,star:true},
+  {id:9,name:'Fruit Tea (Trà Trái Cây)',cat:'Fruit Tea',price:110,badge:'bt'},
   {id:13,name:'BBQ Pork Sandwich',cat:'Food',price:170,badge:'bf'},
   {id:14,name:'Chicken BBQ Sandwich',cat:'Food',price:165,badge:'bf'},
   {id:15,name:'Beef BBQ Sandwich',cat:'Food',price:180,badge:'bf'},
@@ -1326,7 +1327,7 @@ function setCat(c){activeCat=c;buildMenu();}
 function itemHtml(item){
   const star=item.star?`<span class="star">★</span>`:'';
   if(item.addon){
-    return `<div class="addon-item" onclick="addItem(${item.id})">
+    return `<div class="addon-item" data-id="${item.id}" onclick="addItem(${item.id})">
       <div class="addon-label">+ ${item.name.replace('Add-on: ','')}</div>
       <div style="display:flex;align-items:center;gap:8px">
         <span class="addon-price">+₱${item.price}</span>
@@ -1381,8 +1382,11 @@ function addItem(id,temp){
 function updateAddonState(){
   const hasRice=cart.some(i=>[19,20,21].includes(i.id));
   const hasSandwich=cart.some(i=>[13,14,15].includes(i.id));
+  const riceAddons=[22,23,24,25],foodAddons=[26,27,28];
   document.querySelectorAll('.addon-item').forEach(el=>{
-    el.classList.toggle('disabled',!hasRice);
+    const id=parseInt(el.dataset.id,10);
+    const ok=riceAddons.includes(id)?hasRice:(foodAddons.includes(id)?hasSandwich:true);
+    el.classList.toggle('disabled',!ok);
   });
 }
 
@@ -1477,27 +1481,27 @@ function openConfirm(){
   const l=document.getElementById('lname').value.trim();
   const p=document.getElementById('phone').value.trim();
   const ex=document.getElementById('confirm-modal');if(ex)ex.remove();
-  const items=cart.map(i=>`<div style="display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid rgba(240,232,214,0.06);font-size:13px"><span style="color:rgba(240,232,214,0.65)">${i.qty}× ${i.name}${i.temp?' · '+i.temp:''}</span><span style="font-weight:700;color:#C9A452">₱${(i.price*i.qty).toLocaleString()}</span></div>`).join('');
+  const items=cart.map(i=>`<div style="display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid rgba(247,243,233,0.06);font-size:13px"><span style="color:rgba(247,243,233,0.65)">${i.qty}× ${i.name}${i.temp?' · '+i.temp:''}</span><span style="font-weight:700;color:#C7A252">₱${(i.price*i.qty).toLocaleString()}</span></div>`).join('');
   const m=document.createElement('div');
   m.id='confirm-modal';
   m.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:300;display:flex;align-items:flex-end;justify-content:center;backdrop-filter:blur(6px)';
-  m.innerHTML=`<div style="background:#1A1108;border-radius:24px 24px 0 0;width:100%;max-width:480px;padding:22px 22px 44px;max-height:88vh;overflow-y:auto;border-top:1px solid rgba(201,164,82,0.18)">
-    <div style="width:32px;height:3px;background:rgba(240,232,214,0.12);border-radius:2px;margin:0 auto 22px"></div>
-    <div style="font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:#F0E8D6;margin-bottom:2px">Confirm Order</div>
-    <div style="font-size:13px;color:rgba(240,232,214,0.35);margin-bottom:20px">Looks good? Let's place it.</div>
-    <div style="background:#221709;border-radius:14px;border:1px solid rgba(201,164,82,0.12);padding:16px;margin-bottom:12px">
-      <div style="font-size:10px;font-weight:700;letter-spacing:.1em;color:#C9A452;text-transform:uppercase;margin-bottom:10px;opacity:.75">Customer</div>
-      <div style="font-size:15px;font-weight:600;color:#F0E8D6">${f} ${l}</div>
-      <div style="font-size:13px;color:rgba(240,232,214,0.45);margin-top:3px">${p} · ${pay} · ${eta} min away</div>
+  m.innerHTML=`<div style="background:#1A1108;border-radius:24px 24px 0 0;width:100%;max-width:480px;padding:22px 22px 44px;max-height:88vh;overflow-y:auto;border-top:1px solid rgba(199,162,82,0.18)">
+    <div style="width:32px;height:3px;background:rgba(247,243,233,0.12);border-radius:2px;margin:0 auto 22px"></div>
+    <div style="font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:#F7F3E9;margin-bottom:2px">Confirm Order</div>
+    <div style="font-size:13px;color:rgba(247,243,233,0.35);margin-bottom:20px">Looks good? Let's place it.</div>
+    <div style="background:#221709;border-radius:14px;border:1px solid rgba(199,162,82,0.12);padding:16px;margin-bottom:12px">
+      <div style="font-size:10px;font-weight:700;letter-spacing:.1em;color:#C7A252;text-transform:uppercase;margin-bottom:10px;opacity:.75">Customer</div>
+      <div style="font-size:15px;font-weight:600;color:#F7F3E9">${f} ${l}</div>
+      <div style="font-size:13px;color:rgba(247,243,233,0.45);margin-top:3px">${p} · ${pay} · ${eta} min away</div>
     </div>
-    <div style="background:#221709;border-radius:14px;border:1px solid rgba(201,164,82,0.12);padding:16px;margin-bottom:12px">
-      <div style="font-size:10px;font-weight:700;letter-spacing:.1em;color:#C9A452;text-transform:uppercase;margin-bottom:8px;opacity:.75">Order Summary</div>
+    <div style="background:#221709;border-radius:14px;border:1px solid rgba(199,162,82,0.12);padding:16px;margin-bottom:12px">
+      <div style="font-size:10px;font-weight:700;letter-spacing:.1em;color:#C7A252;text-transform:uppercase;margin-bottom:8px;opacity:.75">Order Summary</div>
       ${items}
-      <div style="display:flex;justify-content:space-between;padding-top:12px;font-size:18px;font-weight:700;color:#F0E8D6"><span>Total</span><span style="color:#C9A452">₱${total.toLocaleString()}</span></div>
+      <div style="display:flex;justify-content:space-between;padding-top:12px;font-size:18px;font-weight:700;color:#F7F3E9"><span>Total</span><span style="color:#C7A252">₱${total.toLocaleString()}</span></div>
     </div>
-    <div style="background:rgba(201,164,82,0.05);border-radius:12px;padding:12px 16px;border:1px solid rgba(201,164,82,0.12);font-size:12px;color:rgba(240,232,214,0.45);line-height:1.65;margin-bottom:22px">💳 You'll be redirected to pay securely via <strong style="color:#C9A452">${pay}</strong>. Your order is sent to the kitchen only after payment is confirmed.</div>
-    <button onclick="document.getElementById('confirm-modal').remove();doPlaceOrder()" style="width:100%;padding:17px;border-radius:60px;background:#C9A452;color:#0F0A05;border:none;font-size:16px;font-weight:700;font-family:'DM Sans',sans-serif;cursor:pointer;margin-bottom:10px;letter-spacing:.01em">💳 Proceed to Payment →</button>
-    <button onclick="document.getElementById('confirm-modal').remove()" style="width:100%;padding:14px;border-radius:60px;background:transparent;color:rgba(240,232,214,0.35);border:1px solid rgba(240,232,214,0.08);font-size:14px;font-family:'DM Sans',sans-serif;cursor:pointer">Go Back</button>
+    <div style="background:rgba(199,162,82,0.05);border-radius:12px;padding:12px 16px;border:1px solid rgba(199,162,82,0.12);font-size:12px;color:rgba(247,243,233,0.45);line-height:1.65;margin-bottom:22px">💳 You'll be redirected to pay securely via <strong style="color:#C7A252">${pay}</strong>. Your order is sent to the kitchen only after payment is confirmed.</div>
+    <button onclick="document.getElementById('confirm-modal').remove();doPlaceOrder()" style="width:100%;padding:17px;border-radius:60px;background:#C7A252;color:#0A0A0A;border:none;font-size:16px;font-weight:700;font-family:'DM Sans',sans-serif;cursor:pointer;margin-bottom:10px;letter-spacing:.01em">💳 Proceed to Payment →</button>
+    <button onclick="document.getElementById('confirm-modal').remove()" style="width:100%;padding:14px;border-radius:60px;background:transparent;color:rgba(247,243,233,0.35);border:1px solid rgba(247,243,233,0.08);font-size:14px;font-family:'DM Sans',sans-serif;cursor:pointer">Go Back</button>
   </div>`;
   document.body.appendChild(m);
 }
