@@ -1031,7 +1031,7 @@ html, body {
 <div class="screen" id="screen-splash">
   <div class="splash-bg">
     <div class="splash-glow"></div>
-    <img src="https://raw.githubusercontent.com/digisyn-co/yannas-cafe-order/main/logo.png" class="splash-logo" alt="Yanna's">
+    <img src="/assets/logo.png" class="splash-logo" alt="Yanna's">
     <div class="splash-location">📍 San Enrique · Iloilo</div>
   </div>
   <div class="splash-sheet">
@@ -1051,7 +1051,7 @@ html, body {
         <div class="menu-headline">Morning<br>Rituals</div>
       </div>
       <div style="display:flex;align-items:center;gap:10px">
-        <img src="https://raw.githubusercontent.com/digisyn-co/yannas-cafe-order/main/logo.png" class="menu-logo-sm" alt="Yanna's">
+        <img src="/assets/logo.png" class="menu-logo-sm" alt="Yanna's">
         <div class="cart-pill" onclick="goTo('cart')">
           🛍
           <span class="cart-pill-count" id="cart-count-pill">0</span>
@@ -1064,7 +1064,7 @@ html, body {
     <div id="menu-list"></div>
     <div class="pad-bottom"></div>
   </div>
-  <button class="fab" id="cart-fab" onclick="goTo('cart')">
+  <button class="fab" id="cart-fab" onclick="goTo('cart')" aria-label="View cart">
     <span class="fab-count" id="fab-count">0</span>
     <span class="fab-sep"></span>
     View Order
@@ -1075,7 +1075,7 @@ html, body {
 <!-- ③ CART -->
 <div class="screen hidden" id="screen-cart">
   <div class="topbar">
-    <button class="back-btn" onclick="goBack()">←</button>
+    <button class="back-btn" onclick="goBack()" aria-label="Go back">←</button>
     <div class="topbar-title">Your Order</div>
   </div>
   <div class="screen-body">
@@ -1089,7 +1089,7 @@ html, body {
 <!-- ④ DETAILS -->
 <div class="screen hidden" id="screen-details">
   <div class="topbar">
-    <button class="back-btn" onclick="goBack()">←</button>
+    <button class="back-btn" onclick="goBack()" aria-label="Go back">←</button>
     <div class="topbar-title">Your Details</div>
     <div class="topbar-step">Step 1 of 3</div>
   </div>
@@ -1140,7 +1140,7 @@ html, body {
 <!-- ⑤ ETA -->
 <div class="screen hidden" id="screen-eta">
   <div class="topbar">
-    <button class="back-btn" onclick="goBack()">←</button>
+    <button class="back-btn" onclick="goBack()" aria-label="Go back">←</button>
     <div class="topbar-title">How far are you?</div>
     <div class="topbar-step">Step 2 of 3</div>
   </div>
@@ -1174,7 +1174,7 @@ html, body {
 <!-- ⑥ PROCESSING -->
 <div class="screen hidden" id="screen-processing">
   <div class="proc-wrap">
-    <img src="https://raw.githubusercontent.com/digisyn-co/yannas-cafe-order/main/logo.png" class="proc-logo" alt="Yanna's">
+    <img src="/assets/logo.png" class="proc-logo" alt="Yanna's">
     <div class="proc-spinner"></div>
     <div class="proc-title" id="proc-title">Placing your order…</div>
     <div class="proc-sub" id="proc-sub">Connecting to Yanna's kitchen</div>
@@ -1215,7 +1215,7 @@ html, body {
 <!-- ⑧ THANK YOU -->
 <div class="screen hidden" id="screen-thankyou">
   <div class="ty-hero">
-    <img src="https://raw.githubusercontent.com/digisyn-co/yannas-cafe-order/main/logo.png" class="ty-logo" alt="Yanna's">
+    <img src="/assets/logo.png" class="ty-logo" alt="Yanna's">
     <div class="ty-check">✓</div>
     <div class="ty-headline">Order Complete</div>
     <div class="ty-name">See you soon,<br><span id="ty-firstname">Friend</span>!</div>
@@ -1226,7 +1226,7 @@ html, body {
       <div class="ty-note-text" id="ty-note">"The Lord bless you and keep you; the Lord make his face shine on you and be gracious to you."</div>
       <div class="ty-note-ref">— Numbers 6:24–25</div>
       <div class="ty-note-sig">
-        <img src="https://raw.githubusercontent.com/digisyn-co/yannas-cafe-order/main/logo.png" class="ty-note-sig-logo" alt="">
+        <img src="/assets/logo.png" class="ty-note-sig-logo" alt="">
         <div class="ty-note-sig-text"><strong>Yanna's Vietnamese Coffee</strong>San Enrique, Iloilo</div>
       </div>
     </div>
@@ -1279,6 +1279,7 @@ const MENU=[
   {id:28,name:'Add-on: Signature House Dip',cat:'Food',price:40,badge:'bf',addon:true},
 ];
 
+function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 let sb,cart=[],screen='splash',navStack=['splash'];
 let pay='GCash',eta=null,orderInterval=null,orderData=null;
 
@@ -1291,7 +1292,6 @@ window.addEventListener('load',()=>{
 
 // NAV
 function goTo(s){
-  console.log('goTo called:',s,'from:',screen);
   document.getElementById('screen-'+screen).classList.add('hidden');
   const el=document.getElementById('screen-'+s);
   el.classList.remove('hidden');
@@ -1312,7 +1312,7 @@ function goBack(){
 // MENU
 const CATS=['All','Coffee','Matcha','Fruit Tea','Food','Rice','Combo'];
 let activeCat='All';
-function buildMenu(){ console.log('buildMenu called, MENU length:',MENU.length);
+function buildMenu(){
   document.getElementById('cat-row').innerHTML=CATS.map(c=>`<button class="cat-btn${c===activeCat?' active':''}" onclick="setCat('${c}')">${c}</button>`).join('');
   const list=activeCat==='All'?MENU:MENU.filter(i=>i.cat===activeCat);
   const cats=[...new Set(list.map(i=>i.cat))];
@@ -1442,11 +1442,16 @@ function pickPay(m){
   pay=m;
   ['gcash','qrph','card'].forEach(k=>document.getElementById('pay-'+k).classList.toggle('on',m===({gcash:'GCash',qrph:'QR PH',card:'Card'}[k])));
 }
+function isValidPhone(p){
+  // Philippine mobile format: 09XXXXXXXXX or +63/63 9XXXXXXXXX (11 digits after the leading 0/63)
+  const digits=p.replace(/[\s-]/g,'');
+  return /^(\+?63|0)9\d{9}$/.test(digits);
+}
 function checkDetails(){
   const f=document.getElementById('fname').value.trim();
   const l=document.getElementById('lname').value.trim();
   const p=document.getElementById('phone').value.trim();
-  document.getElementById('details-next').disabled=!(f&&l&&p.replace(/\s/g,'').length>=10);
+  document.getElementById('details-next').disabled=!(f&&l&&isValidPhone(p));
 }
 
 // ETA
@@ -1491,7 +1496,7 @@ function openConfirm(){
     <div style="font-size:13px;color:rgba(247,243,233,0.35);margin-bottom:20px">Looks good? Let's place it.</div>
     <div style="background:#221709;border-radius:14px;border:1px solid rgba(199,162,82,0.12);padding:16px;margin-bottom:12px">
       <div style="font-size:10px;font-weight:700;letter-spacing:.1em;color:#C7A252;text-transform:uppercase;margin-bottom:10px;opacity:.75">Customer</div>
-      <div style="font-size:15px;font-weight:600;color:#F7F3E9">${f} ${l}</div>
+      <div style="font-size:15px;font-weight:600;color:#F7F3E9">${esc(f)} ${esc(l)}</div>
       <div style="font-size:13px;color:rgba(247,243,233,0.45);margin-top:3px">${p} · ${pay} · ${eta} min away</div>
     </div>
     <div style="background:#221709;border-radius:14px;border:1px solid rgba(199,162,82,0.12);padding:16px;margin-bottom:12px">
@@ -1511,26 +1516,31 @@ const PM_TYPES={GCash:'gcash',Card:'card','QR PH':'qrph'};
 const PM_LABELS={gcash:'GCash',card:'Card',qrph:'QR PH'};
 const PENDING_KEY='yannas_pending_order';
 
+let placingOrder=false; // double-submit guard, same pattern as the POS's __savingOrder
 async function doPlaceOrder(){
+  if(placingOrder) return;
   const f=document.getElementById('fname').value.trim();
   const l=document.getElementById('lname').value.trim();
   const p=document.getElementById('phone').value.trim();
   if(!f||!l||!p||!eta||!cart.length){toast('Please complete your order details');return;}
+  if(!isValidPhone(p)){toast('Please enter a valid PH mobile number');return;}
+  placingOrder=true;
   goTo('processing');
   document.getElementById('proc-title').textContent='Starting secure checkout…';
   document.getElementById('proc-sub').textContent='Redirecting you to pay';
   const total=cart.reduce((s,i)=>s+i.price*i.qty,0);
-  const today=new Date();
-  const{data:prev}=await sb.from('drive_thru_orders').select('id').gte('created_at',today.toISOString().split('T')[0]+'T00:00:00');
-  const num=(prev?.length||0)+1;
-  const orderNum='#DT-'+String(num).padStart(4,'0');
+  // Cosmetic reference only, for PayMongo's dashboard/description. The REAL,
+  // collision-free order number is assigned by the database once payment is
+  // confirmed (see createPaidOrder) — it is no longer guessed client-side,
+  // which previously risked two concurrent customers getting the same #DT-####.
+  const provisionalRef='DT-'+Date.now().toString(36).toUpperCase();
   const items=cart.map(i=>({id:i.id,name:i.name,qty:i.qty,price:i.price,cat:i.cat,temp:i.temp||null}));
   const base=location.origin+location.pathname;
   try{
     const res=await fetch('/api/create-checkout',{
       method:'POST',headers:{'Content-Type':'application/json'},
       body:JSON.stringify({
-        items,total,order_number:orderNum,
+        items,total,order_number:provisionalRef,
         customer_name:f+' '+l,customer_phone:p,
         payment_method_types:[PM_TYPES[pay]||'gcash'],
         success_url:base+'?pmreturn=success',
@@ -1539,15 +1549,17 @@ async function doPlaceOrder(){
     });
     const out=await res.json();
     if(!res.ok||!out.checkout_url) throw new Error(out.error||'Could not start payment');
-    // Stash the order so we can create it once payment is confirmed on return
+    // Stash the order so we can create it once payment is confirmed on return.
+    // order_number is intentionally NOT stored here — see createPaidOrder.
     localStorage.setItem(PENDING_KEY,JSON.stringify({
-      session_id:out.session_id,order_number:orderNum,
+      session_id:out.session_id,
       fname:f,lname:l,phone:p,items,total,eta,pay,
       arrival:new Date(Date.now()+eta*60000).toISOString()
     }));
     window.location.href=out.checkout_url;
   }catch(err){
     console.error(err);
+    placingOrder=false;
     goBack();
     toast(err.message||'Payment could not start — try again');
   }
@@ -1592,11 +1604,24 @@ async function handlePaymentReturn(){
 
 // Order only enters the system after payment is confirmed
 async function createPaidOrder(pending,method){
-  const{data,error}=await sb.from('drive_thru_orders').insert({
-    order_number:pending.order_number,customer_name:pending.fname+' '+pending.lname,
+  const base={
+    customer_name:pending.fname+' '+pending.lname,
     customer_phone:pending.phone,items:pending.items,total:pending.total,
     payment_method:method,eta_minutes:pending.eta,arrival_time:pending.arrival,status:'incoming'
-  }).select().single();
+  };
+  // Preferred: omit order_number so the DB assigns a unique, gapless one
+  // (requires supabase_phase2.sql — dt_seq / default on drive_thru_orders.order_number).
+  let {data,error}=await sb.from('drive_thru_orders').insert(base).select().single();
+  if(error){
+    const msg=((error.message||'')+' '+(error.code||'')+' '+(error.details||''));
+    const notMigrated=/null value in column .order_number.|violates not-null constraint|column|does not exist|42703|schema cache|could not find/i.test(msg);
+    if(notMigrated){
+      // DB not migrated yet -> fall back to a low-collision client-generated number
+      // instead of a racy same-day COUNT query.
+      const fallbackNum='#DT-'+String(Date.now()).slice(-6);
+      ({data,error}=await sb.from('drive_thru_orders').insert({...base,order_number:fallbackNum}).select().single());
+    }
+  }
   if(error||!data){
     console.error(error);
     toast('Payment received, but saving failed — please show this screen to staff.');
