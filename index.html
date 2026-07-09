@@ -1111,6 +1111,14 @@ html, body {
         <div class="form-label">Phone Number <span class="req">*</span></div>
         <input class="form-input" id="phone" placeholder="+63 917 123 4567" type="tel" inputmode="numeric" maxlength="13" oninput="checkDetails()">
       </div>
+      <div id="loyalty-card" style="background:#221709;border-radius:14px;border:1px solid rgba(199,162,82,0.18);padding:16px;margin-bottom:20px">
+        <label style="display:flex;align-items:center;gap:10px;cursor:pointer;font-size:14px;color:#F7F3E9;font-weight:600">
+          <input type="checkbox" id="loyalty-optin" checked onchange="onLoyaltyOptInChange()" style="width:18px;height:18px;accent-color:#C7A252;flex-shrink:0">
+          <span>🎁 Join Yanna's Rewards — earn points on this order</span>
+        </label>
+        <div id="loyalty-status" style="font-size:12.5px;color:rgba(247,243,233,0.45);margin-top:8px;margin-left:28px"></div>
+        <div id="loyalty-reward-picker" style="margin-top:10px;margin-left:28px"></div>
+      </div>
       <div class="pay-section-label">
         Payment Method
         <span class="pay-lock">🔒</span>
@@ -1238,6 +1246,9 @@ html, body {
         <div class="ty-order-total" id="ty-total">₱0</div>
       </div>
     </div>
+    <div id="ty-loyalty-card" style="display:none;background:#221709;border-radius:14px;border:1px solid rgba(199,162,82,0.18);padding:16px;margin-top:14px;text-align:center">
+      <div style="font-size:13px;color:rgba(247,243,233,0.75)" id="ty-loyalty-text"></div>
+    </div>
     <button class="ty-again" onclick="orderAgain()">ORDER AGAIN →</button>
     <div class="ty-share" onclick="shareApp()">Share Yanna's with a friend ↗</div>
   </div>
@@ -1282,6 +1293,7 @@ const MENU=[
 function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 let sb,cart=[],screen='splash',navStack=['splash'];
 let pay='GCash',eta=null,orderInterval=null,orderData=null;
+let loyaltyOptIn=true,loyaltyBalance=0,loyaltyRewardsList=[],appliedReward=null,loyaltyLookupTimer=null;
 
 // Init after all JS is parsed
 window.addEventListener('load',()=>{
@@ -1452,6 +1464,64 @@ function checkDetails(){
   const l=document.getElementById('lname').value.trim();
   const p=document.getElementById('phone').value.trim();
   document.getElementById('details-next').disabled=!(f&&l&&isValidPhone(p));
+  clearTimeout(loyaltyLookupTimer);
+  if(isValidPhone(p)) loyaltyLookupTimer=setTimeout(lookupLoyalty,500);
+}
+
+// LOYALTY
+function normalizePhone(p){
+  let d=(p||'').replace(/\D/g,'');
+  if(d.startsWith('0')) d='63'+d.slice(1);
+  else if(d.length===10) d='63'+d;
+  return d;
+}
+function onLoyaltyOptInChange(){
+  loyaltyOptIn=document.getElementById('loyalty-optin').checked;
+  const statusEl=document.getElementById('loyalty-status');
+  const pickerEl=document.getElementById('loyalty-reward-picker');
+  if(!loyaltyOptIn){
+    statusEl.textContent='';pickerEl.innerHTML='';appliedReward=null;
+  } else {
+    lookupLoyalty();
+  }
+}
+async function lookupLoyalty(){
+  const p=document.getElementById('phone').value.trim();
+  if(!loyaltyOptIn||!isValidPhone(p)||!sb) return;
+  const phoneKey=normalizePhone(p);
+  const statusEl=document.getElementById('loyalty-status');
+  try{
+    const {data}=await sb.rpc('loyalty_lookup',{p_phone:phoneKey});
+    const row=Array.isArray(data)?data[0]:data;
+    loyaltyBalance=row?(row.points||0):0;
+    if(row){
+      statusEl.textContent=`Welcome back${row.name?', '+row.name.split(' ')[0]:''}! You have ${loyaltyBalance} points.`;
+    } else {
+      statusEl.textContent='New member — earn 1 point per ₱20 spent on this order.';
+    }
+    if(!loyaltyRewardsList.length){
+      const {data:rw}=await sb.from('loyalty_rewards').select('*').eq('active',true).order('sort_order');
+      loyaltyRewardsList=rw||[];
+    }
+    renderRewardPicker();
+  }catch(e){ console.error('loyalty lookup failed',e); }
+}
+function renderRewardPicker(){
+  const el=document.getElementById('loyalty-reward-picker');
+  const eligible=loyaltyRewardsList.filter(r=>r.points_required<=loyaltyBalance);
+  if(!eligible.length){ el.innerHTML=''; return; }
+  el.innerHTML=`<select id="reward-select" onchange="onRewardPick()" style="width:100%;padding:10px;border-radius:8px;background:#1A1108;color:#F7F3E9;border:1px solid rgba(199,162,82,0.3);font-size:13px">
+    <option value="">Redeem a reward (optional)</option>
+    ${eligible.map(r=>`<option value="${r.id}">${esc(r.label)} — ${r.points_required} pts</option>`).join('')}
+  </select>`;
+}
+function onRewardPick(){
+  const id=document.getElementById('reward-select').value;
+  appliedReward=id?loyaltyRewardsList.find(r=>String(r.id)===id):null;
+}
+function getDiscountedTotal(rawTotal){
+  if(!appliedReward) return rawTotal;
+  return Math.max(0, rawTotal-Number(appliedReward.discount_value));
 }
 
 // ETA
@@ -1481,7 +1551,8 @@ function haversine(a,b,c,d){
 
 // CONFIRM MODAL
 function openConfirm(){
-  const total=cart.reduce((s,i)=>s+i.price*i.qty,0);
+  const rawTotal=cart.reduce((s,i)=>s+i.price*i.qty,0);
+  const total=getDiscountedTotal(rawTotal);
   const f=document.getElementById('fname').value.trim();
   const l=document.getElementById('lname').value.trim();
   const p=document.getElementById('phone').value.trim();
@@ -1502,6 +1573,7 @@ function openConfirm(){
     <div style="background:#221709;border-radius:14px;border:1px solid rgba(199,162,82,0.12);padding:16px;margin-bottom:12px">
       <div style="font-size:10px;font-weight:700;letter-spacing:.1em;color:#C7A252;text-transform:uppercase;margin-bottom:8px;opacity:.75">Order Summary</div>
       ${items}
+      ${appliedReward?`<div style="display:flex;justify-content:space-between;padding:6px 0;font-size:13px;color:#8fd4a8"><span>🎁 ${esc(appliedReward.label)}</span><span>-₱${(rawTotal-total).toLocaleString()}</span></div>`:''}
       <div style="display:flex;justify-content:space-between;padding-top:12px;font-size:18px;font-weight:700;color:#F7F3E9"><span>Total</span><span style="color:#C7A252">₱${total.toLocaleString()}</span></div>
     </div>
     <div style="background:rgba(199,162,82,0.05);border-radius:12px;padding:12px 16px;border:1px solid rgba(199,162,82,0.12);font-size:12px;color:rgba(247,243,233,0.45);line-height:1.65;margin-bottom:22px">💳 You'll be redirected to pay securely via <strong style="color:#C7A252">${pay}</strong>. Your order is sent to the kitchen only after payment is confirmed.</div>
@@ -1528,7 +1600,8 @@ async function doPlaceOrder(){
   goTo('processing');
   document.getElementById('proc-title').textContent='Starting secure checkout…';
   document.getElementById('proc-sub').textContent='Redirecting you to pay';
-  const total=cart.reduce((s,i)=>s+i.price*i.qty,0);
+  const rawTotal=cart.reduce((s,i)=>s+i.price*i.qty,0);
+  const total=getDiscountedTotal(rawTotal);
   // Cosmetic reference only, for PayMongo's dashboard/description. The REAL,
   // collision-free order number is assigned by the database once payment is
   // confirmed (see createPaidOrder) — it is no longer guessed client-side,
@@ -1554,7 +1627,9 @@ async function doPlaceOrder(){
     localStorage.setItem(PENDING_KEY,JSON.stringify({
       session_id:out.session_id,
       fname:f,lname:l,phone:p,items,total,eta,pay,
-      arrival:new Date(Date.now()+eta*60000).toISOString()
+      arrival:new Date(Date.now()+eta*60000).toISOString(),
+      loyaltyOptIn,appliedRewardId:appliedReward?appliedReward.id:null,
+      appliedRewardLabel:appliedReward?appliedReward.label:null
     }));
     window.location.href=out.checkout_url;
   }catch(err){
@@ -1627,6 +1702,21 @@ async function createPaidOrder(pending,method){
     toast('Payment received, but saving failed — please show this screen to staff.');
     return;
   }
+  let loyaltyResultPoints=null;
+  const phoneKey=normalizePhone(pending.phone);
+  try{
+    if(pending.appliedRewardId){
+      const {data:bal}=await sb.rpc('loyalty_redeem',{p_phone:phoneKey,p_reward_id:pending.appliedRewardId,p_order_number:data.order_number});
+      loyaltyResultPoints=bal;
+    }
+    if(pending.loyaltyOptIn){
+      const {data:bal2}=await sb.rpc('loyalty_earn',{p_phone:phoneKey,p_name:pending.fname+' '+pending.lname,p_amount:pending.total,p_order_number:data.order_number});
+      loyaltyResultPoints=bal2;
+    }
+  }catch(e){ console.error('loyalty update failed',e); }
+  window.__lastLoyaltyPoints=loyaltyResultPoints;
+  window.__lastRewardLabel=pending.appliedRewardLabel;
+
   localStorage.removeItem(PENDING_KEY);
   cart=[];syncFab();orderData=data;
   listenOrder(data);drawStatus(data);
@@ -1736,15 +1826,30 @@ function showThankYou(){
   set('ty-total','₱'+(o.total||0).toLocaleString());
   const items=document.getElementById('ty-order-items');
   if(items) items.innerHTML=(o.items||[]).map(i=>`<div>${i.qty}× ${i.name}${i.temp?' ('+i.temp+')':''}</div>`).join('');
+  const loyaltyCard=document.getElementById('ty-loyalty-card');
+  const loyaltyText=document.getElementById('ty-loyalty-text');
+  if(window.__lastLoyaltyPoints!=null){
+    let msg=`🎁 You now have <strong>${window.__lastLoyaltyPoints} points</strong> with Yanna's Rewards.`;
+    if(window.__lastRewardLabel) msg=`🎉 Redeemed: ${esc(window.__lastRewardLabel)}. `+msg;
+    loyaltyText.innerHTML=msg;
+    loyaltyCard.style.display='block';
+  } else if(loyaltyCard){
+    loyaltyCard.style.display='none';
+  }
   goTo('thankyou');navStack=['splash','thankyou'];
 }
 
 // THANK YOU
 function orderAgain(){
   orderData=null;eta=null;pay='GCash';
+  appliedReward=null;loyaltyBalance=0;window.__lastLoyaltyPoints=null;window.__lastRewardLabel=null;
   ['fname','lname','phone'].forEach(id=>document.getElementById(id).value='');
   ['gcash','qrph','card'].forEach(k=>document.getElementById('pay-'+k).classList.toggle('on',k==='gcash'));
   document.querySelectorAll('.eta-tile').forEach(el=>el.classList.remove('on'));
+  const optin=document.getElementById('loyalty-optin'); if(optin) optin.checked=true;
+  loyaltyOptIn=true;
+  const statusEl=document.getElementById('loyalty-status'); if(statusEl) statusEl.textContent='';
+  const pickerEl=document.getElementById('loyalty-reward-picker'); if(pickerEl) pickerEl.innerHTML='';
   navStack=['splash'];screen='thankyou';goTo('menu');
 }
 
